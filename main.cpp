@@ -1,48 +1,28 @@
-
 #include <fstream>
-
-// Simple setup of a rendering engine
 #include <Utils/SimpleSetup.h>
-
 #include <Display/FollowCamera.h>
-
-// Rendering structures
-//#include <Renderers/IRenderNode.h>
-//#include <Renderers/OpenGL/RenderingView.h>
-//#include <Renderers/IRenderNode.h>
-#include <Renderers/RenderStateNode.h>
+#include <Scene/RenderStateNode.h>
 #include <Renderers/OpenGL/LightRenderer.h>
 
 // Resources
 #include <Resources/IModelResource.h>
 #include <Resources/ResourceManager.h>
+#include <Resources/GLSLResource.h>
 
 // Scene structures
 #include <Scene/SceneNode.h>
 #include <Scene/GeometryNode.h>
 #include <Scene/TransformationNode.h>
-//#include <Scene/VertexArrayTransformer.h>
-//#include <Scene/DisplayListTransformer.h>
 #include <Scene/PointLightNode.h>
 #include <Scene/DotVisitor.h>
-//AccelerationStructures extension
-//#include <Scene/CollectedGeometryTransformer.h>
-//#include <Scene/QuadTransformer.h>
-//#include <Scene/BSPTransformer.h>
-//#include <Scene/ASDotVisitor.h>
-//#include <Renderers/AcceleratedRenderingView.h>
-
 #include <Utils/MoveHandler.h>
-//#include <Utils/Statistics.h>
 
 //FixedTimeStepPhysics extension
 #include <Physics/FixedTimeStepPhysics.h>
 #include <Physics/RigidBox.h>
 
-
 // Additional namespaces
 using namespace OpenEngine::Core;
-//using namespace OpenEngine::Logging;
 using namespace OpenEngine::Devices;
 using namespace OpenEngine::Renderers;
 using namespace OpenEngine::Renderers::OpenGL;
@@ -52,8 +32,6 @@ using namespace OpenEngine::Physics;
 using namespace OpenEngine::Display;
 
 using OpenEngine::Renderers::OpenGL::RenderingView;
-
-
 using OpenEngine::Utils::SimpleSetup;
 
 // Configuration structure to pass around to the setup methods
@@ -78,17 +56,16 @@ void SetupResources(Config&);
 void SetupLight(Config&);
 void SetupCamera(Config&);
 void SetupDevices(Config&);
+void SetupShaders(Config&);
 void SetupScene(Config&);
-void SetupRendering(Config&);
-
 
 int main() {
     Config config;
     SetupResources(config);
     SetupCamera(config);
     SetupLight(config);
-    SetupRendering(config);
     SetupDevices(config);
+    SetupShaders(config);
     SetupScene(config);
 
     ofstream out("test.dot", ios::out); // create output file
@@ -117,9 +94,14 @@ void SetupLight(Config& config) {
     pln->specular = Vector<4, float>(0,0,0,1);*/
     config.lightNode = pln;
     LightRenderer* lr = new LightRenderer(*config.setup.GetCamera());
-    //config.setup.GetRenderer().InitializeEvent().Attach(*lr);
+    config.setup.GetRenderer().InitializeEvent().Attach(*lr);
     config.setup.GetRenderer().PreProcessEvent().Attach(*lr);
-    //config.setup.GetRenderer().DeinitializeEvent().Attach(*lr);
+    config.setup.GetRenderer().DeinitializeEvent().Attach(*lr);
+
+    RenderStateNode* rsn = new RenderStateNode();
+    rsn->EnableOption(RenderStateNode::LIGHTING);
+    config.renderingScene = rsn;
+
 }
 
 void SetupCamera(Config& config) {
@@ -130,40 +112,19 @@ void SetupCamera(Config& config) {
     config.camera->LookAt(0, 0, 0);
 }
 
-void SetupRendering(Config& config) {
-    RenderStateNode* rsn = new RenderStateNode();
-    rsn->EnableOption(RenderStateNode::LIGHTING);
-    config.renderingScene = rsn;
-
-    //    GLfloat am[] = {0.0, 0.0, 0.0, 1.0};
-    //glLightModelfv(GL_LIGHT_MODEL_AMBIENT, am);
-}
-
-
 void SetupDevices(Config& config) {
-    // Register movement handler to be able to move the camera
     MoveHandler* move_h = new MoveHandler(*config.camera, config.setup.GetMouse());
     config.setup.GetKeyboard().KeyEvent().Attach(*move_h);
-
-    // Keyboard bindings to the rigid box and camera
-//     KeyboardHandler* keyHandler = new KeyboardHandler(config.setup.GetEngine(),
-//                                                       config.camera,
-//                                                       config.physicBody,
-//                                                       config.physics);
-//     config.setup.GetKeyboard().KeyEvent().Attach(*keyHandler);
-
-//     config.setup.GetEngine().InitializeEvent().Attach(*keyHandler);
-//     config.setup.GetEngine().ProcessEvent().Attach(*keyHandler);
-//    config.setup.GetEngine().DeinitializeEvent().Attach(*keyHandler);
-
     config.setup.GetEngine().InitializeEvent().Attach(*move_h);
     config.setup.GetEngine().ProcessEvent().Attach(*move_h);
     config.setup.GetEngine().DeinitializeEvent().Attach(*move_h);
 }
 
+void SetupShaders(Config& config) {
+    GLSLResource* res = new GLSLResource("shaders/test.frag");
+}
 
 void SetupScene(Config& config) {
-
     // Create scene nodes
     config.dynamicScene = new SceneNode();
 
@@ -171,14 +132,11 @@ void SetupScene(Config& config) {
 
     // Attach light node
     TransformationNode* light_tran = new TransformationNode();
-    light_tran->SetPosition(Vector<3, float>(0, 200, 0));
+    light_tran->SetPosition(Vector<3, float>(200, 200, 0));
     light_tran->AddNode(config.lightNode);
     config.dynamicScene->AddNode(light_tran);
 
     ISceneNode* current = config.dynamicScene;
-
-    // Position of the vehicle
-    //Vector<3,float> position(0, 0, 0);
 
     // Add models from models.txt to the scene
     ifstream* mfile = File::Open("projects/ShadowDemo/models.txt");
@@ -201,7 +159,6 @@ void SetupScene(Config& config) {
         mod_res->Unload();
 
         TransformationNode* mod_tran = new TransformationNode();
-        //mod_tran->SetPosition(position);
         mod_tran->AddNode(mod_node);
  
         if(firstModel){

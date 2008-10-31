@@ -18,6 +18,7 @@ ADD_EXECUTABLE(ShadowDemo ${SHADOWDEMO_SOURCES})
 TARGET_LINK_LIBRARIES(ShadowDemo
   OpenEngine_Utils
   # Extensions
+  OpenEngine_Geometry
   Extensions_SetupHelpers
   Extensions_FixedTimeStepPhysics
   Extensions_GenericHandlers
