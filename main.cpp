@@ -59,7 +59,7 @@ void SetupDevices(Config&);
 void SetupShaders(Config&);
 void SetupScene(Config&);
 
-int main() {
+int main(int argc, char** argv) {
     Config config;
     SetupResources(config);
     SetupCamera(config);
