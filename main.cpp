@@ -121,7 +121,7 @@ void SetupDevices(Config& config) {
 }
 
 void SetupShaders(Config& config) {
-    GLSLResource* res = new GLSLResource("shaders/test.frag");
+    //GLSLResource* res = new GLSLResource("shaders/test.frag");
 }
 
 void SetupScene(Config& config) {
@@ -172,12 +172,12 @@ void SetupScene(Config& config) {
     delete mfile;
 
     //Ground
-    FacePtr f1(new Face(Vector<3, float>(-200,0,200), Vector<3, float>(200,0,200),
+    /*FacePtr f1(new Face(Vector<3, float>(-200,0,200), Vector<3, float>(200,0,200),
                         Vector<3, float>(0,0,-200), Vector<3, float>(0,1,0),
                         Vector<3, float>(0,1,0), Vector<3, float>(0,1,0)));
     FaceSet* tri_faces = new FaceSet();
     tri_faces->Add(f1);
     GeometryNode* tri = new GeometryNode(tri_faces);
     current->AddNode(tri);
-    
+    */
 }

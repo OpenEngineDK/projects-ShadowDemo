@@ -1,2 +1,4 @@
 FutureTank/model.obj
-#Sahara001/Road.obj
+#FutureTankShaded/FutureTankShaded.obj
+#CetattaShaded/CetattaShaded.obj
+SmallLevel/SmallLevel.obj
