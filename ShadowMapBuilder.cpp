@@ -8,13 +8,15 @@
 //--------------------------------------------------------------------
 
 #include "ShadowMapBuilder.h"
+#include "ShadowMapRenderer.h"
+
 #include <Scene/TransformationNode.h>
 #include <Scene/GeometryNode.h>
 #include <Display/IViewingVolume.h>
 
 #include <Geometry/FaceSet.h>
 
-//#include <Logging/Logger.h>
+#include <Logging/Logger.h>
 
 namespace OpenEngine {
 namespace Renderers {
@@ -31,6 +33,8 @@ ShadowMapBuilder::ShadowMapBuilder(Display::IViewingVolume& volume)
 ShadowMapBuilder::~ShadowMapBuilder() {}
         
 void ShadowMapBuilder::VisitTransformationNode(TransformationNode* node) {
+    //    logger.info << "ShadMapBuilder: visited TransNode" << logger.end;
+
     CHECK_FOR_GL_ERROR();
     
     // push transformation matrix to model view stack
@@ -49,11 +53,15 @@ void ShadowMapBuilder::VisitTransformationNode(TransformationNode* node) {
 }
 
 void ShadowMapBuilder::VisitGeometryNode(GeometryNode* node) {
+    //    logger.info << "ShadMapBuilder: visited GeomNode" << logger.end;
+    
 
     FaceList::iterator itr;
     FaceSet* faces = node->GetFaceSet();
     if (faces == NULL) return;
 
+
+    CHECK_FOR_GL_ERROR();
     // for each face ...
     for (itr = faces->begin(); itr != faces->end(); itr++) {
         FacePtr f = (*itr);
@@ -97,6 +105,20 @@ void ShadowMapBuilder::Handle(RenderingEventArg arg) {
 
     arg.renderer.GetSceneRoot()->Accept(*this);
 
+
+    // TODO: move the camera into the pos of the light source
+
+    CHECK_FOR_GL_ERROR();
+
+    //TODO: maybe use OE functionality for texture handling
+
+    // bind the texture used to store the shadow map
+    ShadowMapRenderer* shadRend = static_cast<const ShadowMapRenderer*>(&arg.renderer);
+    GLuint texName = shadRend->GetShadowMapID();
+    glBindTexture(GL_TEXTURE_2D, texName);
+    // overwrite the previous shadow map
+    // TODO: get resolution from viewing volume
+    glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, 0, 0, 800, 600, 0);
 
     CHECK_FOR_GL_ERROR();
 }

@@ -21,6 +21,8 @@
 #include <Physics/FixedTimeStepPhysics.h>
 #include <Physics/RigidBox.h>
 
+#include "ShadowMapBuilder.h"
+
 // Additional namespaces
 using namespace OpenEngine::Core;
 using namespace OpenEngine::Devices;
@@ -53,6 +55,7 @@ struct Config {
 };
 
 void SetupResources(Config&);
+void SetupShadow(Config&);
 void SetupLight(Config&);
 void SetupCamera(Config&);
 void SetupDevices(Config&);
@@ -63,6 +66,7 @@ int main(int argc, char** argv) {
     Config config;
     SetupResources(config);
     SetupCamera(config);
+    SetupShadow(config);
     SetupLight(config);
     SetupDevices(config);
     SetupShaders(config);
@@ -80,6 +84,12 @@ int main(int argc, char** argv) {
 
 void SetupResources(Config& config) {
     config.setup.AddDataDirectory("projects/ShadowDemo/data/");
+}
+
+void SetupShadow(Config& config) {
+    ShadowMapBuilder* sb = new ShadowMapBuilder(*config.setup.GetCamera());
+    config.setup.GetRenderer().InitializeEvent().Attach(*sb);
+    config.setup.GetRenderer().PreProcessEvent().Attach(*sb);
 }
 
 void SetupLight(Config& config) {
