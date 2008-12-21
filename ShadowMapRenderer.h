@@ -73,6 +73,7 @@ private:
     Event<RenderingEventArg> deinitialize;
 
     void InitializeGLSLVersion();
+    void RenderTest();
 
 public:
     ShadowMapRenderer(Viewport* viewport);

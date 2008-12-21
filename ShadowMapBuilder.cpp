@@ -89,28 +89,32 @@ void ShadowMapBuilder::VisitGeometryNode(GeometryNode* node) {
 
 void ShadowMapBuilder::Handle(RenderingEventArg arg) {
     CHECK_FOR_GL_ERROR();
-
+    //logger.info << "ShadowBuilder" << logger.end;
     // turn off lights
-
     glDisable(GL_LIGHTING);
 
     CHECK_FOR_GL_ERROR();
 
     // rotate the world to compensate for the camera
-    Matrix<4,4,float> matrix = volume.GetViewMatrix();
-    float f[16] = {0};
-    matrix.ToArray(f);
-    glMultMatrixf(f);
-    CHECK_FOR_GL_ERROR();
+    //Matrix<4,4,float> matrix = volume.GetViewMatrix();
+    //float f[16] = {0};
+    //matrix.ToArray(f);
+    //glMultMatrixf(f);
+    //CHECK_FOR_GL_ERROR();
+    // TODO: Tænke over ovenstående
 
     arg.renderer.GetSceneRoot()->Accept(*this);
 
-
+    //gluLookAt(50.0, 10.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
     // TODO: move the camera into the pos of the light source
 
-    CHECK_FOR_GL_ERROR();
+    //CHECK_FOR_GL_ERROR();
 
     //TODO: maybe use OE functionality for texture handling
+
+    //Vector<3, float> oldPos = volume.GetPosition();
+    //Vector<3, float> lightPos = Vector<3, float>(50, 10, 0);
+    //volume.SetPosition(lightPos);
 
     // bind the texture used to store the shadow map
     ShadowMapRenderer* shadRend = static_cast<const ShadowMapRenderer*>(&arg.renderer);
@@ -119,6 +123,10 @@ void ShadowMapBuilder::Handle(RenderingEventArg arg) {
     // overwrite the previous shadow map
     // TODO: get resolution from viewing volume
     glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, 0, 0, 800, 600, 0);
+    
+    //volume.SetPosition(oldPos);
+    
+    glEnable(GL_LIGHTING);
 
     CHECK_FOR_GL_ERROR();
 }

@@ -66,8 +66,9 @@ int main(int argc, char** argv) {
     Config config;
     SetupResources(config);
     SetupCamera(config);
-    SetupShadow(config);
+
     SetupLight(config);
+    SetupShadow(config);
     SetupDevices(config);
     SetupShaders(config);
     SetupScene(config);
@@ -84,6 +85,14 @@ int main(int argc, char** argv) {
 
 void SetupResources(Config& config) {
     config.setup.AddDataDirectory("projects/ShadowDemo/data/");
+}
+
+void SetupCamera(Config& config) {
+    config.camera        = new FollowCamera( *config.setup.GetCamera() );
+    config.setup.SetCamera(*config.camera);
+
+    config.camera->SetPosition(Vector<3, float>(0, 100, 100));
+    //    config.camera->LookAt(0, 0, 0);
 }
 
 void SetupShadow(Config& config) {
@@ -103,7 +112,7 @@ void SetupLight(Config& config) {
     pln->diffuse = Vector<4, float>(0,0,0,1);
     pln->specular = Vector<4, float>(0,0,0,1);*/
     config.lightNode = pln;
-    LightRenderer* lr = new LightRenderer(*config.setup.GetCamera());
+    LightRenderer* lr = new LightRenderer(*config.camera);
     config.setup.GetRenderer().InitializeEvent().Attach(*lr);
     config.setup.GetRenderer().PreProcessEvent().Attach(*lr);
     config.setup.GetRenderer().DeinitializeEvent().Attach(*lr);
@@ -114,19 +123,8 @@ void SetupLight(Config& config) {
 
 }
 
-void SetupCamera(Config& config) {
-    config.camera        = new FollowCamera( *config.setup.GetCamera() );
-    config.setup.SetCamera(*config.camera);
-
-    config.setup.GetCamera()->SetPosition(Vector<3, float>(500, 500, 0));
-    config.setup.GetCamera()->LookAt(0, 0, 0);
-    // and 2 up the y-axis = up the vertical axis
-    
-    // set the direction to the origin (we will be looking slightly downwards)
-}
-
 void SetupDevices(Config& config) {
-    MoveHandler* move_h = new MoveHandler(*config.setup.GetCamera(), config.setup.GetMouse());
+    MoveHandler* move_h = new MoveHandler(*config.camera, config.setup.GetMouse());
     config.setup.GetKeyboard().KeyEvent().Attach(*move_h);
     config.setup.GetEngine().InitializeEvent().Attach(*move_h);
     config.setup.GetEngine().ProcessEvent().Attach(*move_h);
@@ -175,7 +173,7 @@ void SetupScene(Config& config) {
         mod_tran->AddNode(mod_node);
  
         if(firstModel){
-            //config.camera->Follow(mod_tran);
+            config.camera->Follow(mod_tran);
         }
         
         current->AddNode(mod_tran);

@@ -112,6 +112,18 @@ void ShadowMapRenderer::Handle(InitializeEventArg arg) {
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT ); 
     CHECK_FOR_GL_ERROR();
 
+    // Generate the texture id
+    GLuint tmp;
+    glGenTextures(1, &tmp);
+    shadowMapID = tmp;
+
+    glBindTexture(GL_TEXTURE_2D, shadowMapID);
+    
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+    CHECK_FOR_GL_ERROR();
+    
     // Enable lighting
     //glEnable(GL_LIGHTING);
     //glEnable(GL_LIGHT0);
@@ -146,6 +158,7 @@ void ShadowMapRenderer::Handle(ProcessEventArg arg) {
     // gluLookAt(0,0,0, 200, 200, 0, 0,1,0);
     CHECK_FOR_GL_ERROR();
     this->process.Notify(rarg);
+    RenderTest();
     this->stage = RENDERER_POSTPROCESS;
     this->postProcess.Notify(rarg);
     this->stage = RENDERER_PREPROCESS;
@@ -423,6 +436,56 @@ void ShadowMapRenderer::DrawPoint(Vector<3,float> point, Vector<3,float> color ,
     // reset state
     if (t) glEnable(GL_TEXTURE_2D);
     if (l) glEnable(GL_LIGHTING);
+    CHECK_FOR_GL_ERROR();
+}
+
+void ShadowMapRenderer::RenderTest() {
+    //GLboolean l = glIsEnabled(GL_LIGHTING);
+    //GLboolean t = glIsEnabled(GL_TEXTURE_2D);
+
+    //glClearColor(0.0, 0.0, 0.0, 1.0);
+    //glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+    CHECK_FOR_GL_ERROR();
+
+    // quad rendering of texture
+    glDisable(GL_LIGHTING);
+    glEnable(GL_TEXTURE_2D);
+    CHECK_FOR_GL_ERROR();
+
+    glBindTexture(GL_TEXTURE_2D, shadowMapID);
+    CHECK_FOR_GL_ERROR();
+
+    //glMatrixMode(GL_PROJECTION);
+    //glLoadIdentity();
+    //bool orth = false;
+    //if (!orth)
+    //    gluPerspective(45.0,800/600,0.3,1000.0);
+    //else
+    //    glOrtho(-1.0, 1.0, -1.0, 1.0, -1.0, 1.0);
+    //CHECK_FOR_GL_ERROR();
+
+    //if (!orth)
+    //    gluLookAt(0,1,4, 0,0,0, 0,1,0);
+    glColor4f(0.8, 0.8, 0.8, 1.0);
+    glBegin(GL_QUADS);
+
+    glTexCoord2f(0.0, 0.0);
+    glVertex3f(-100.0, -100.0, 50.);
+
+    glTexCoord2f(1.0, 0.0);
+    glVertex3f(100.0, -100.0, 50.0);
+
+    glTexCoord2f(1.0, 1.0);
+    glVertex3f(100.0, 100.0, 50.0);
+
+    glTexCoord2f(0.0, 1.0);
+    glVertex3f(-100.0, 100.0, 50.0);
+
+    glEnd();
+    CHECK_FOR_GL_ERROR();
+
+    glDisable(GL_TEXTURE_2D);
+    glEnable(GL_LIGHTING);
     CHECK_FOR_GL_ERROR();
 }
 
