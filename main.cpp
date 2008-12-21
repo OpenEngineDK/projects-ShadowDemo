@@ -1,5 +1,5 @@
 #include <fstream>
-#include <Utils/SimpleSetup.h>
+#include "ShadowMapSetup.h"
 #include <Display/FollowCamera.h>
 #include <Scene/RenderStateNode.h>
 #include <Renderers/OpenGL/LightRenderer.h>
@@ -32,17 +32,17 @@ using namespace OpenEngine::Physics;
 using namespace OpenEngine::Display;
 
 using OpenEngine::Renderers::OpenGL::RenderingView;
-using OpenEngine::Utils::SimpleSetup;
+using OpenEngine::Utils::ShadowMapSetup;
 
 // Configuration structure to pass around to the setup methods
 struct Config {
-    SimpleSetup           setup;
+    ShadowMapSetup        setup;
     PointLightNode*       lightNode;
     FollowCamera*         camera;
     ISceneNode*           renderingScene;
     ISceneNode*           dynamicScene;
     Config()
-        : setup(SimpleSetup("ShadowDemo"))
+        : setup(ShadowMapSetup("ShadowDemo"))
         , lightNode(NULL)
         , camera(NULL)
         , renderingScene(NULL)
@@ -68,10 +68,10 @@ int main(int argc, char** argv) {
     SetupShaders(config);
     SetupScene(config);
 
-    ofstream out("test.dot", ios::out); // create output file
-    DotVisitor dot;                        // create dot visitor
-    dot.Write(*config.renderingScene, &out);           // build and write the graph
-    out.close();                           // close your file
+    //    ofstream out("test.dot", ios::out); // create output file
+    //DotVisitor dot;                        // create dot visitor
+    //dot.Write(*config.renderingScene, &out);           // build and write the graph
+    //out.close();                           // close your file
     
     config.setup.SetScene(*config.renderingScene);
     config.setup.GetEngine().Start();
@@ -108,12 +108,15 @@ void SetupCamera(Config& config) {
     config.camera        = new FollowCamera( *config.setup.GetCamera() );
     config.setup.SetCamera(*config.camera);
 
-    config.camera->SetPosition(Vector<3, float>(200, 200, 200));
-    config.camera->LookAt(0, 0, 0);
+    config.setup.GetCamera()->SetPosition(Vector<3, float>(500, 500, 0));
+    config.setup.GetCamera()->LookAt(0, 0, 0);
+    // and 2 up the y-axis = up the vertical axis
+    
+    // set the direction to the origin (we will be looking slightly downwards)
 }
 
 void SetupDevices(Config& config) {
-    MoveHandler* move_h = new MoveHandler(*config.camera, config.setup.GetMouse());
+    MoveHandler* move_h = new MoveHandler(*config.setup.GetCamera(), config.setup.GetMouse());
     config.setup.GetKeyboard().KeyEvent().Attach(*move_h);
     config.setup.GetEngine().InitializeEvent().Attach(*move_h);
     config.setup.GetEngine().ProcessEvent().Attach(*move_h);
@@ -162,7 +165,7 @@ void SetupScene(Config& config) {
         mod_tran->AddNode(mod_node);
  
         if(firstModel){
-            config.camera->Follow(mod_tran);
+            //config.camera->Follow(mod_tran);
         }
         
         current->AddNode(mod_tran);

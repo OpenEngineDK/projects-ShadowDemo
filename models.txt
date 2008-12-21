@@ -1,4 +1,4 @@
-FutureTank/model.obj
-#FutureTankShaded/FutureTankShaded.obj
+#FutureTank/model.obj
+FutureTankShaded/FutureTankShaded.obj
 #CetattaShaded/CetattaShaded.obj
 SmallLevel/SmallLevel.obj
