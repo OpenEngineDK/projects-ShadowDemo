@@ -96,8 +96,8 @@ void SetupCamera(Config& config) {
 }
 
 void SetupShadow(Config& config) {
-    ShadowMapBuilder* sb = new ShadowMapBuilder(*config.setup.GetCamera());
-    config.setup.GetRenderer().InitializeEvent().Attach(*sb);
+    ShadowMapBuilder* sb = new ShadowMapBuilder(config.camera);
+    //config.setup.GetRenderer().InitializeEvent().Attach(*sb);
     config.setup.GetRenderer().PreProcessEvent().Attach(*sb);
 }
 

@@ -13,8 +13,9 @@
 #include <Renderers/IRenderer.h>
 #include <Scene/ISceneNodeVisitor.h>
 #include <Core/IListener.h>
-
+#include <Display/Camera.h>
 #include <Meta/OpenGL.h>
+#include <Display/ViewingVolume.h>
 
 namespace OpenEngine {
 
@@ -54,11 +55,12 @@ class ShadowMapBuilder: public ISceneNodeVisitor, public IListener<RenderingEven
  private:
     //    float pos[4], dir[4];
     //    GLint lightCount;
-    Display::IViewingVolume& volume;
+    Display::IViewingVolume* volume;
+    Display::Camera* camera;
 
  public:
 
-    ShadowMapBuilder(Display::IViewingVolume& volume); 
+    ShadowMapBuilder(Display::Camera* vol); 
     ~ShadowMapBuilder();
         
     void Handle(RenderingEventArg arg);
@@ -67,6 +69,7 @@ class ShadowMapBuilder: public ISceneNodeVisitor, public IListener<RenderingEven
 
     void VisitGeometryNode(GeometryNode* node);
     
+    void ApplyViewingVolume(Display::IViewingVolume& volume);
     
     //    void VisitPointLightNode(PointLightNode* node);
 
