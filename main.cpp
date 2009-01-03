@@ -91,14 +91,15 @@ void SetupCamera(Config& config) {
     config.camera        = new FollowCamera( *config.setup.GetCamera() );
     config.setup.SetCamera(*config.camera);
 
-    config.camera->SetPosition(Vector<3, float>(0, 100, 100));
+    config.camera->SetPosition(Vector<3, float>(0, 100, -200));
+    config.camera->LookAt(0,0,0);
     //    config.camera->LookAt(0, 0, 0);
 }
 
 void SetupShadow(Config& config) {
-    ShadowMapBuilder* sb = new ShadowMapBuilder(config.camera);
+    //ShadowMapBuilder* sb = new ShadowMapBuilder(config.camera);
     //config.setup.GetRenderer().InitializeEvent().Attach(*sb);
-    config.setup.GetRenderer().PreProcessEvent().Attach(*sb);
+    //config.setup.GetRenderer().PreProcessEvent().Attach(*sb);
 }
 
 void SetupLight(Config& config) {
@@ -124,7 +125,7 @@ void SetupLight(Config& config) {
 }
 
 void SetupDevices(Config& config) {
-    MoveHandler* move_h = new MoveHandler(*config.camera, config.setup.GetMouse());
+    MoveHandler* move_h = new MoveHandler(*config.setup.GetShadowMapCamera(), config.setup.GetMouse());
     config.setup.GetKeyboard().KeyEvent().Attach(*move_h);
     config.setup.GetEngine().InitializeEvent().Attach(*move_h);
     config.setup.GetEngine().ProcessEvent().Attach(*move_h);

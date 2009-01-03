@@ -46,6 +46,7 @@ namespace OpenEngine {
         namespace OpenGL {
             class ShadowMapRenderer;
             class RenderingView;
+            class ShadowMapRenderingView;
         }
     }
 }
@@ -79,6 +80,8 @@ public:
 
     void EnableDebugging();
 
+    Display::Camera* GetShadowMapCamera() const;
+
 private:
     std::string title;
     Core::Engine* engine;
@@ -92,6 +95,12 @@ private:
     Renderers::OpenGL::RenderingView* renderingview;
     Renderers::TextureLoader* textureloader;
     Display::HUD* hud;
+
+    Display::SDLFrame* shadowMapFrame;
+    Display::Viewport* shadowMapViewport;
+    Display::Camera* shadowMapCamera;
+    Display::Frustum* shadowMapFrustum;
+    Renderers::OpenGL::ShadowMapRenderingView* shadowMapRenderingview;
 };
 
 } // NS Utils

@@ -1,5 +1,6 @@
 
 #include "ShadowMapSetup.h"
+#include "ShadowMapRenderingView.h"
 
 // Core stuff
 #include <Core/Engine.h>
@@ -60,6 +61,16 @@ public:
         , AcceleratedRenderingView(viewport) {}
 };
 
+class ExtShadowMapRenderingView
+    : public ShadowMapRenderingView
+    , public AcceleratedRenderingView {
+public:
+    ExtShadowMapRenderingView(Viewport& viewport)
+        : IRenderingView(viewport)
+        , ShadowMapRenderingView(viewport)
+        , AcceleratedRenderingView(viewport) {}
+};
+
 class TextureLoadOnInit
     : public IListener<RenderingEventArg> {
     TextureLoader& tl;
@@ -93,6 +104,12 @@ ShadowMapSetup::ShadowMapSetup(std::string title)
     , renderingview(new ExtRenderingView(*viewport))
     , textureloader(new TextureLoader(*renderer))
     , hud(new HUD())
+
+    , shadowMapFrame(new SDLFrame(800,600,32))
+    , shadowMapViewport(new Viewport(*shadowMapFrame))
+    , shadowMapCamera(new Camera(*(new InterpolatedViewingVolume(*(new ViewingVolume())))))
+    , shadowMapFrustum(new Frustum(*shadowMapCamera))
+    , shadowMapRenderingview(new ExtShadowMapRenderingView(*shadowMapViewport))
 {
     // create a logger to std out
     Logger::AddLogger(new StreamLogger(&std::cout));
@@ -121,6 +138,17 @@ ShadowMapSetup::ShadowMapSetup(std::string title)
     input->KeyEvent().Attach(*(new QuitHandler(*engine)));
     // setup hud
     renderer->PostProcessEvent().Attach(*hud);
+
+    //shadow
+    shadowMapViewport->SetViewingVolume(shadowMapFrustum);
+
+    shadowMapCamera->SetPosition(Vector<3, float>(10,0,0));
+
+    //engine->InitializeEvent().Attach(*shadowMapFrame);
+    //engine->ProcessEvent().Attach(*shadowMapFrame);
+    //engine->DeinitializeEvent().Attach(*shadowMapFrame);
+
+    renderer->PreProcessEvent().Attach(*shadowMapRenderingview);
 }
 
 /**
@@ -222,6 +250,10 @@ void ShadowMapSetup::SetScene(ISceneNode& scene) {
  */
 Camera* ShadowMapSetup::GetCamera() const {
     return camera;
+}
+
+Camera* ShadowMapSetup::GetShadowMapCamera() const {
+    return shadowMapCamera;
 }
 
 /**

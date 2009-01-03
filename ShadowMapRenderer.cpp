@@ -156,6 +156,7 @@ void ShadowMapRenderer::Handle(ProcessEventArg arg) {
     this->preProcess.Notify(rarg);
     this->stage = RENDERER_PROCESS;
     // gluLookAt(0,0,0, 200, 200, 0, 0,1,0);
+
     CHECK_FOR_GL_ERROR();
     this->process.Notify(rarg);
     RenderTest();

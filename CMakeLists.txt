@@ -6,6 +6,7 @@ SET( SHADOWDEMO_SOURCES
   ShadowMapBuilder.cpp
   ShadowMapRenderer.cpp
   ShadowMapSetup.cpp
+  ShadowMapRenderingView.cpp
 )
 
 # todo get rid of this!@#!
