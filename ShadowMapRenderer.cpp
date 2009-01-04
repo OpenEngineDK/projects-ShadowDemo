@@ -485,6 +485,25 @@ void ShadowMapRenderer::RenderTest() {
     glEnd();
     CHECK_FOR_GL_ERROR();
 
+    glColor4f(1.0, 0.5, 0.5, 1.0);
+    glBegin(GL_QUADS);
+
+    glTexCoord2f(0.0, 0.0);
+    glVertex3f(-200.0, -50.0, -200.0);
+
+    glTexCoord2f(1.0, 0.0);
+    glVertex3f(200.0, -50.0, -200.0);
+
+    glTexCoord2f(1.0, 1.0);
+    glVertex3f(200.0, -1000.0, 200.0);
+
+    glTexCoord2f(0.0, 1.0);
+    glVertex3f(-200.0, -1000.0, 200.0);
+
+    glEnd();
+    CHECK_FOR_GL_ERROR();
+
+
     glDisable(GL_TEXTURE_2D);
     glEnable(GL_LIGHTING);
     CHECK_FOR_GL_ERROR();

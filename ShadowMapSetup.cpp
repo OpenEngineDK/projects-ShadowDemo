@@ -1,6 +1,7 @@
 
 #include "ShadowMapSetup.h"
 #include "ShadowMapRenderingView.h"
+#include "ShadowRenderingView.h"
 
 // Core stuff
 #include <Core/Engine.h>
@@ -19,7 +20,7 @@
 
 // OpenGL extension
 #include "ShadowMapRenderer.h"
-#include <Renderers/OpenGL/RenderingView.h>
+//#include <Renderers/OpenGL/RenderingView.h>
 #include <Renderers/OpenGL/ShaderLoader.h>
 #include <Resources/GLSLResource.h>
 
@@ -51,13 +52,13 @@ using namespace Renderers;
 using namespace Resources;
 using namespace Scene;
 
-class ExtRenderingView
-    : public RenderingView
+class ExtShadowRenderingView
+    : public ShadowRenderingView
     , public AcceleratedRenderingView {
 public:
-    ExtRenderingView(Viewport& viewport)
+    ExtShadowRenderingView(Viewport& viewport)
         : IRenderingView(viewport)
-        , RenderingView(viewport)
+        , ShadowRenderingView(viewport)
         , AcceleratedRenderingView(viewport) {}
 };
 
@@ -101,7 +102,7 @@ ShadowMapSetup::ShadowMapSetup(std::string title)
     , scene(new SceneNode())
     , camera(new Camera(*(new InterpolatedViewingVolume(*(new ViewingVolume())))))
     , frustum(new Frustum(*camera))
-    , renderingview(new ExtRenderingView(*viewport))
+    , shadowRenderingview(new ExtShadowRenderingView(*viewport))
     , textureloader(new TextureLoader(*renderer))
     , hud(new HUD())
 
@@ -130,7 +131,7 @@ ShadowMapSetup::ShadowMapSetup(std::string title)
     // populate the default scene
     scene->AddNode(new DirectionalLightNode());
     // setup the rendering system
-    renderer->ProcessEvent().Attach(*renderingview);
+    renderer->ProcessEvent().Attach(*shadowRenderingview);
     renderer->SetSceneRoot(scene);
     viewport->SetViewingVolume(frustum);
     renderer->InitializeEvent().Attach(*(new TextureLoadOnInit(*textureloader)));
@@ -142,7 +143,8 @@ ShadowMapSetup::ShadowMapSetup(std::string title)
     //shadow
     shadowMapViewport->SetViewingVolume(shadowMapFrustum);
 
-    shadowMapCamera->SetPosition(Vector<3, float>(10,0,0));
+    shadowMapCamera->SetPosition(Vector<3, float>(0,200,0));
+    shadowMapCamera->LookAt(0,0,0);
 
     //engine->InitializeEvent().Attach(*shadowMapFrame);
     //engine->ProcessEvent().Attach(*shadowMapFrame);

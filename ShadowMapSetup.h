@@ -45,7 +45,7 @@ namespace OpenEngine {
         class TextureLoader;
         namespace OpenGL {
             class ShadowMapRenderer;
-            class RenderingView;
+            class ShadowRenderingView;
             class ShadowMapRenderingView;
         }
     }
@@ -92,7 +92,7 @@ private:
     Scene::ISceneNode* scene;
     Display::Camera* camera;
     Display::Frustum* frustum;
-    Renderers::OpenGL::RenderingView* renderingview;
+    Renderers::OpenGL::ShadowRenderingView* shadowRenderingview;
     Renderers::TextureLoader* textureloader;
     Display::HUD* hud;
 

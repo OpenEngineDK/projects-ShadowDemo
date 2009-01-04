@@ -3,10 +3,10 @@
 SET( SHADOWDEMO_SOURCES
   # Add all the cpp source files here
   main.cpp
-  ShadowMapBuilder.cpp
   ShadowMapRenderer.cpp
   ShadowMapSetup.cpp
   ShadowMapRenderingView.cpp
+  ShadowRenderingView.cpp
 )
 
 # todo get rid of this!@#!

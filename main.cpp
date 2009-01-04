@@ -21,7 +21,7 @@
 #include <Physics/FixedTimeStepPhysics.h>
 #include <Physics/RigidBox.h>
 
-#include "ShadowMapBuilder.h"
+
 
 // Additional namespaces
 using namespace OpenEngine::Core;
@@ -33,7 +33,7 @@ using namespace OpenEngine::Utils;
 using namespace OpenEngine::Physics;
 using namespace OpenEngine::Display;
 
-using OpenEngine::Renderers::OpenGL::RenderingView;
+using OpenEngine::Renderers::OpenGL::ShadowRenderingView;
 using OpenEngine::Utils::ShadowMapSetup;
 
 // Configuration structure to pass around to the setup methods
@@ -92,7 +92,7 @@ void SetupCamera(Config& config) {
     config.setup.SetCamera(*config.camera);
 
     config.camera->SetPosition(Vector<3, float>(0, 100, -200));
-    config.camera->LookAt(0,0,0);
+    //config.camera->LookAt(0,0,0);
     //    config.camera->LookAt(0, 0, 0);
 }
 
@@ -125,7 +125,7 @@ void SetupLight(Config& config) {
 }
 
 void SetupDevices(Config& config) {
-    MoveHandler* move_h = new MoveHandler(*config.setup.GetShadowMapCamera(), config.setup.GetMouse());
+    MoveHandler* move_h = new MoveHandler(*config.camera, config.setup.GetMouse());
     config.setup.GetKeyboard().KeyEvent().Attach(*move_h);
     config.setup.GetEngine().InitializeEvent().Attach(*move_h);
     config.setup.GetEngine().ProcessEvent().Attach(*move_h);
