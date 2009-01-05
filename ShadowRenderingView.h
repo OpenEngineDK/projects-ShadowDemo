@@ -37,7 +37,7 @@ class ShadowRenderingView : virtual public IRenderingView {
                     Vector<3,float> color);
 
 public:
-    ShadowRenderingView(Viewport& viewport);
+    ShadowRenderingView(Viewport& viewport, Viewport& shadowMapViewport);
     virtual ~ShadowRenderingView();
     void VisitGeometryNode(GeometryNode* node);
     void VisitVertexArrayNode(VertexArrayNode* node);
@@ -59,6 +59,9 @@ private:
     IShaderResourcePtr currentShader;
     int binormalid;
     int tangentid;
+
+    Viewport& shadowMapViewport;
+
     Vector<4,float> backgroundColor;
 
     void EnableBlending(BlendingNode::BlendingFactor source, 

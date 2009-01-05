@@ -56,9 +56,9 @@ class ExtShadowRenderingView
     : public ShadowRenderingView
     , public AcceleratedRenderingView {
 public:
-    ExtShadowRenderingView(Viewport& viewport)
+    ExtShadowRenderingView(Viewport& viewport, Viewport& shadowMapViewport)
         : IRenderingView(viewport)
-        , ShadowRenderingView(viewport)
+        , ShadowRenderingView(viewport, shadowMapViewport)
         , AcceleratedRenderingView(viewport) {}
 };
 
@@ -102,7 +102,7 @@ ShadowMapSetup::ShadowMapSetup(std::string title)
     , scene(new SceneNode())
     , camera(new Camera(*(new InterpolatedViewingVolume(*(new ViewingVolume())))))
     , frustum(new Frustum(*camera))
-    , shadowRenderingview(new ExtShadowRenderingView(*viewport))
+
     , textureloader(new TextureLoader(*renderer))
     , hud(new HUD())
 
@@ -111,7 +111,15 @@ ShadowMapSetup::ShadowMapSetup(std::string title)
     , shadowMapCamera(new Camera(*(new InterpolatedViewingVolume(*(new ViewingVolume())))))
     , shadowMapFrustum(new Frustum(*shadowMapCamera))
     , shadowMapRenderingview(new ExtShadowMapRenderingView(*shadowMapViewport))
+
+    , shadowRenderingview(new ExtShadowRenderingView(*viewport, *shadowMapViewport))
 {
+    //shadow
+    shadowMapViewport->SetViewingVolume(shadowMapFrustum);
+
+    shadowMapCamera->SetPosition(Vector<3, float>(50,200,50));
+    shadowMapCamera->LookAt(0,0,0);
+
     // create a logger to std out
     Logger::AddLogger(new StreamLogger(&std::cout));
     // configure modules needing process time
@@ -139,12 +147,6 @@ ShadowMapSetup::ShadowMapSetup(std::string title)
     input->KeyEvent().Attach(*(new QuitHandler(*engine)));
     // setup hud
     renderer->PostProcessEvent().Attach(*hud);
-
-    //shadow
-    shadowMapViewport->SetViewingVolume(shadowMapFrustum);
-
-    shadowMapCamera->SetPosition(Vector<3, float>(0,200,0));
-    shadowMapCamera->LookAt(0,0,0);
 
     //engine->InitializeEvent().Attach(*shadowMapFrame);
     //engine->ProcessEvent().Attach(*shadowMapFrame);

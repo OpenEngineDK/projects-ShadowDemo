@@ -4,6 +4,8 @@
 #include <Scene/RenderStateNode.h>
 #include <Renderers/OpenGL/LightRenderer.h>
 
+#include <Devices/SDLInput.h>
+
 // Resources
 #include <Resources/IModelResource.h>
 #include <Resources/ResourceManager.h>
@@ -91,8 +93,8 @@ void SetupCamera(Config& config) {
     config.camera        = new FollowCamera( *config.setup.GetCamera() );
     config.setup.SetCamera(*config.camera);
 
-    config.camera->SetPosition(Vector<3, float>(0, 100, -200));
-    //config.camera->LookAt(0,0,0);
+    config.camera->SetPosition(Vector<3, float>(200, 200, -100));
+    config.camera->LookAt(0,-100,0);
     //    config.camera->LookAt(0, 0, 0);
 }
 
@@ -125,11 +127,18 @@ void SetupLight(Config& config) {
 }
 
 void SetupDevices(Config& config) {
-    MoveHandler* move_h = new MoveHandler(*config.camera, config.setup.GetMouse());
-    config.setup.GetKeyboard().KeyEvent().Attach(*move_h);
-    config.setup.GetEngine().InitializeEvent().Attach(*move_h);
-    config.setup.GetEngine().ProcessEvent().Attach(*move_h);
-    config.setup.GetEngine().DeinitializeEvent().Attach(*move_h);
+//     MoveHandler* move_h = new MoveHandler(*config.camera, config.setup.GetMouse());
+//     config.setup.GetKeyboard().KeyEvent().Attach(*move_h);
+//     config.setup.GetEngine().InitializeEvent().Attach(*move_h);
+//     config.setup.GetEngine().ProcessEvent().Attach(*move_h);
+//     config.setup.GetEngine().DeinitializeEvent().Attach(*move_h);
+
+    //To control light
+    MoveHandler* move_h_l = new MoveHandler(*config.setup.GetShadowMapCamera(), *(new SDLInput())/* config.setup.GetMouse()*/);
+    config.setup.GetKeyboard().KeyEvent().Attach(*move_h_l);
+    config.setup.GetEngine().InitializeEvent().Attach(*move_h_l);
+    config.setup.GetEngine().ProcessEvent().Attach(*move_h_l);
+    config.setup.GetEngine().DeinitializeEvent().Attach(*move_h_l);
 }
 
 void SetupShaders(Config& config) {

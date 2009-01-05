@@ -40,9 +40,10 @@ using OpenEngine::Display::IViewingVolume;
  *
  * @param viewport Viewport in which to render.
  */
-ShadowRenderingView::ShadowRenderingView(Viewport& viewport)
+    ShadowRenderingView::ShadowRenderingView(Viewport& viewport, Viewport& shadowMapViewport)
     : IRenderingView(viewport),
-      renderer(NULL) {
+      renderer(NULL),
+      shadowMapViewport(shadowMapViewport){
     renderBinormal=renderTangent=renderSoftNormal=renderHardNormal = false;
     renderTexture = renderShader = true;
     backgroundColor = Vector<4,float>(1.0);
@@ -106,11 +107,29 @@ void ShadowRenderingView::Handle(RenderingEventArg arg) {
     GLfloat tmpMatrix[16];
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
+    
+    IViewingVolume* shadowMapViewingVolume = shadowMapViewport.GetViewingVolume();
+        
     glLoadIdentity();
     glTranslatef(0.5, 0.5, 0.0);
     glScalef(0.5, 0.5, 1.0);
-    gluPerspective(45.0,800/600,0.3,1000.0);
-    gluLookAt(0,200,0, 0,0,0, 0,0,-1);
+    //gluPerspective(45.0,800/600,0.3,1000.0);
+    //gluLookAt(0,200,0, 0,0,0, 0,0,-1);
+    
+     // Setup OpenGL with the volumes projection matrix
+     Matrix<4,4,float> projMatrix = shadowMapViewingVolume->GetProjectionMatrix();
+     float arr[16] = {0};
+     projMatrix.ToArray(arr);
+     glMultMatrixf(arr);
+     CHECK_FOR_GL_ERROR();
+
+     // Get the view matrix and apply it
+     Matrix<4,4,float> matrix = shadowMapViewingVolume->GetViewMatrix();
+     float f[16] = {0};
+     matrix.ToArray(f);
+     glMultMatrixf(f);
+     CHECK_FOR_GL_ERROR();
+
     glGetFloatv(GL_MODELVIEW_MATRIX, tmpMatrix);
     glPopMatrix();
 
@@ -118,7 +137,7 @@ void ShadowRenderingView::Handle(RenderingEventArg arg) {
 
     l.Transpose();
     l.ToArray(tmpMatrix);
-
+    
     glTexGeni(GL_S, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR);
     glTexGeni(GL_T, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR);
     glTexGeni(GL_R, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR);
@@ -142,7 +161,6 @@ void ShadowRenderingView::Handle(RenderingEventArg arg) {
     glTexParameteri(GL_TEXTURE_2D, GL_DEPTH_TEXTURE_MODE, GL_LUMINANCE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_R_TO_TEXTURE);
     glEnable(GL_TEXTURE_2D);
-    
     //TEST_END
 
     Render(&arg.renderer, arg.renderer.GetSceneRoot());
@@ -272,6 +290,7 @@ void ShadowRenderingView::VisitTransformationNode(TransformationNode* node) {
 }
 
 void ShadowRenderingView::ApplyMaterial(MaterialPtr mat) {
+
     // check if shaders should be applied
     if (Renderer::IsGLSLSupported()) {
 
@@ -342,6 +361,7 @@ void ShadowRenderingView::ApplyMaterial(MaterialPtr mat) {
     
     glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, mat->shininess);
     CHECK_FOR_GL_ERROR();
+
 }
 
 /**
@@ -360,13 +380,18 @@ void ShadowRenderingView::VisitGeometryNode(GeometryNode* node) {
     FaceList::iterator itr;
     FaceSet* faces = node->GetFaceSet();
     if (faces == NULL) return;
+    
+    glDisable(GL_TEXTURE_GEN_S);
+    glDisable(GL_TEXTURE_GEN_T);
+    glDisable(GL_TEXTURE_GEN_R);
+    glDisable(GL_TEXTURE_GEN_Q);
 
     // for each face ...
     for (itr = faces->begin(); itr != faces->end(); itr++) {
         FacePtr f = (*itr);
 
         ApplyMaterial(f->mat);
-
+        
         glBegin(GL_TRIANGLES);
         // for each vertex ...
         for (int i=0; i<3; i++) {
@@ -387,10 +412,16 @@ void ShadowRenderingView::VisitGeometryNode(GeometryNode* node) {
 			glVertex3f(v[0],v[1],v[2]);
         }
         glEnd();
+
         CHECK_FOR_GL_ERROR();
 
         RenderDebugGeometry(f);
     }
+
+    glEnable(GL_TEXTURE_GEN_S);
+    glEnable(GL_TEXTURE_GEN_T);
+    glEnable(GL_TEXTURE_GEN_R);
+    glEnable(GL_TEXTURE_GEN_Q);
 
     // last we release the final shader
     if (currentShader != NULL)

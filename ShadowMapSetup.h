@@ -92,7 +92,7 @@ private:
     Scene::ISceneNode* scene;
     Display::Camera* camera;
     Display::Frustum* frustum;
-    Renderers::OpenGL::ShadowRenderingView* shadowRenderingview;
+    
     Renderers::TextureLoader* textureloader;
     Display::HUD* hud;
 
@@ -101,6 +101,7 @@ private:
     Display::Camera* shadowMapCamera;
     Display::Frustum* shadowMapFrustum;
     Renderers::OpenGL::ShadowMapRenderingView* shadowMapRenderingview;
+    Renderers::OpenGL::ShadowRenderingView* shadowRenderingview;
 };
 
 } // NS Utils
