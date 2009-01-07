@@ -93,9 +93,9 @@ void SetupCamera(Config& config) {
     config.camera        = new FollowCamera( *config.setup.GetCamera() );
     config.setup.SetCamera(*config.camera);
 
-    config.camera->SetPosition(Vector<3, float>(200, 200, -100));
-    config.camera->LookAt(0,-100,0);
-    //    config.camera->LookAt(0, 0, 0);
+    config.camera->SetPosition(Vector<3, float>(400, 400, -100));
+    //config.camera->LookAt(0,-100,0);
+    config.camera->LookAt(0, 0, 0);
 }
 
 void SetupShadow(Config& config) {
@@ -106,8 +106,18 @@ void SetupShadow(Config& config) {
 
 void SetupLight(Config& config) {
     // Set up a light node
-    PointLightNode* pln = new PointLightNode();
+    PointLightNode* pln = config.setup.GetShadowLightNode();
     pln->active = true;
+
+    //draw something at the pos of the light node
+    FacePtr face(new Face(Vector<3, float>(-10,0,10), Vector<3, float>(10,0,10),
+                        Vector<3, float>(0,0,15), Vector<3, float>(0,1,0),
+                        Vector<3, float>(0,1,0), Vector<3, float>(0,1,0)));
+    FaceSet* faceSet = new FaceSet();
+    faceSet->Add(face);
+    GeometryNode* geom = new GeometryNode(faceSet);
+    pln->AddNode(geom);
+
     /*    pln->constAtt = 1.0;
     pln->linearAtt = 0.0;
     pln->quadAtt = 0.0;
@@ -115,6 +125,7 @@ void SetupLight(Config& config) {
     pln->diffuse = Vector<4, float>(0,0,0,1);
     pln->specular = Vector<4, float>(0,0,0,1);*/
     config.lightNode = pln;
+
     LightRenderer* lr = new LightRenderer(*config.camera);
     config.setup.GetRenderer().InitializeEvent().Attach(*lr);
     config.setup.GetRenderer().PreProcessEvent().Attach(*lr);
@@ -153,8 +164,9 @@ void SetupScene(Config& config) {
 
     // Attach light node
     TransformationNode* light_tran = new TransformationNode();
-    light_tran->SetPosition(Vector<3, float>(200, 200, 0));
-    light_tran->AddNode(config.lightNode);
+    light_tran->SetPosition(Vector<3, float>(0, 100, 0));
+    //    light_tran->AddNode(config.lightNode);
+    light_tran->AddNode(config.setup.GetShadowLightNode());
     config.dynamicScene->AddNode(light_tran);
 
     ISceneNode* current = config.dynamicScene;

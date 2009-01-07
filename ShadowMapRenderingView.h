@@ -14,6 +14,7 @@
 #include <Renderers/IRenderingView.h>
 #include <Scene/RenderStateNode.h>
 #include <Scene/BlendingNode.h>
+#include <Scene/PointLightNode.h>
 #include <vector>
 
 namespace OpenEngine {
@@ -51,6 +52,7 @@ public:
     IRenderer* GetRenderer();
     virtual void SetBackgroundColor(Vector<4,float> color);
     virtual Vector<4,float> GetBackgroundColor();
+    PointLightNode* GetLightNode();
 
 private:
     bool renderBinormal, renderTangent, renderSoftNormal, renderHardNormal;
@@ -60,6 +62,7 @@ private:
     int binormalid;
     int tangentid;
     Vector<4,float> backgroundColor;
+    PointLightNode* lightNode;
 
     void EnableBlending(BlendingNode::BlendingFactor source, 
                         BlendingNode::BlendingFactor destination,

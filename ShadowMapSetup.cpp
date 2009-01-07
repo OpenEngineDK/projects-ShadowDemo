@@ -111,12 +111,11 @@ ShadowMapSetup::ShadowMapSetup(std::string title)
     , shadowMapCamera(new Camera(*(new InterpolatedViewingVolume(*(new ViewingVolume())))))
     , shadowMapFrustum(new Frustum(*shadowMapCamera))
     , shadowMapRenderingview(new ExtShadowMapRenderingView(*shadowMapViewport))
-
     , shadowRenderingview(new ExtShadowRenderingView(*viewport, *shadowMapViewport))
 {
     //shadow
     shadowMapViewport->SetViewingVolume(shadowMapFrustum);
-
+    //shadowMapCamera->SetPosition(Vector<3, float>(0,0,0));
     shadowMapCamera->SetPosition(Vector<3, float>(50,200,50));
     shadowMapCamera->LookAt(0,0,0);
 
@@ -258,6 +257,10 @@ Camera* ShadowMapSetup::GetCamera() const {
 
 Camera* ShadowMapSetup::GetShadowMapCamera() const {
     return shadowMapCamera;
+}
+
+PointLightNode* ShadowMapSetup::GetShadowLightNode() {
+    return shadowMapRenderingview->GetLightNode();
 }
 
 /**

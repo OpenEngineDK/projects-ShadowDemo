@@ -24,10 +24,14 @@
 #include <Meta/OpenGL.h>
 #include <Math/Math.h>
 
+// Logging
+#include <Logging/Logger.h>
+
 namespace OpenEngine {
 namespace Renderers {
 namespace OpenGL {
 
+using OpenEngine::Math::Quaternion;
 using OpenEngine::Math::Vector;
 using OpenEngine::Math::Matrix;
 using OpenEngine::Geometry::FaceSet;
@@ -41,12 +45,13 @@ using OpenEngine::Display::IViewingVolume;
  *
  * @param viewport Viewport in which to render.
  */
-ShadowMapRenderingView::ShadowMapRenderingView(Viewport& viewport)
+    ShadowMapRenderingView::ShadowMapRenderingView(Viewport& viewport)
     : IRenderingView(viewport),
       renderer(NULL) {
     renderBinormal=renderTangent=renderSoftNormal=renderHardNormal = false;
     renderTexture = renderShader = true;
     backgroundColor = Vector<4,float>(1.0);
+    this->lightNode = new PointLightNode();
 }
 
 /**
@@ -64,12 +69,24 @@ IRenderer* ShadowMapRenderingView::GetRenderer() {
 }
 
 void ShadowMapRenderingView::Handle(RenderingEventArg arg) {
+    
+
     glPushMatrix();
     CHECK_FOR_GL_ERROR();
     // the following is moved from the previous Renderer::Process
 
     Viewport& viewport = this->GetViewport();
     IViewingVolume* volume = viewport.GetViewingVolume();
+
+    //update the position of the lights viewing volume
+    Vector<3,float>* position = new Vector<3,float>(0.0,0.0,0.0);
+    Quaternion<float>* rotation = new Quaternion<float>();
+    if(dynamic_cast<TransformationNode*>(lightNode->GetParent())) {
+        TransformationNode* parent = static_cast<TransformationNode*>(lightNode->GetParent());
+        parent->GetAccumulatedTransformations(position, rotation);
+    }
+    volume->SetPosition(*position);
+    logger.info << volume->GetPosition() << "\n" << logger.end;
 
     // If no viewing volume is set for the viewport ignore it.
     if (volume == NULL) return;
@@ -495,6 +512,10 @@ void ShadowMapRenderingView::SetBackgroundColor(Vector<4,float> color) {
 
 Vector<4,float> ShadowMapRenderingView::GetBackgroundColor() {
     return backgroundColor;
+}
+
+PointLightNode* ShadowMapRenderingView::GetLightNode() {
+    return lightNode;
 }
 
 void ShadowMapRenderingView::RenderDebugGeometry(FacePtr f) {

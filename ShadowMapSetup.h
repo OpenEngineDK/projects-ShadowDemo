@@ -82,6 +82,8 @@ public:
 
     Display::Camera* GetShadowMapCamera() const;
 
+    Scene::PointLightNode* GetShadowLightNode();
+
 private:
     std::string title;
     Core::Engine* engine;
