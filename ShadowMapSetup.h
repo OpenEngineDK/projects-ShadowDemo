@@ -84,6 +84,9 @@ public:
 
     Scene::PointLightNode* GetShadowLightNode();
 
+    Display::Frustum* GetFrustum();
+    Display::Frustum* GetShadowMapFrustum();
+
 private:
     std::string title;
     Core::Engine* engine;

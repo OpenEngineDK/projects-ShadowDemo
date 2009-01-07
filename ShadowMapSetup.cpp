@@ -113,6 +113,9 @@ ShadowMapSetup::ShadowMapSetup(std::string title)
     , shadowMapRenderingview(new ExtShadowMapRenderingView(*shadowMapViewport))
     , shadowRenderingview(new ExtShadowRenderingView(*viewport, *shadowMapViewport))
 {
+    //frustum debug test
+    frustum->VisualizeClipping(true);
+    shadowMapFrustum->VisualizeClipping(true);
     //shadow
     shadowMapViewport->SetViewingVolume(shadowMapFrustum);
     //shadowMapCamera->SetPosition(Vector<3, float>(0,0,0));
@@ -261,6 +264,14 @@ Camera* ShadowMapSetup::GetShadowMapCamera() const {
 
 PointLightNode* ShadowMapSetup::GetShadowLightNode() {
     return shadowMapRenderingview->GetLightNode();
+}
+
+Frustum* ShadowMapSetup::GetFrustum() {
+    return frustum;
+}
+
+Frustum* ShadowMapSetup::GetShadowMapFrustum() {
+    return shadowMapFrustum;
 }
 
 /**

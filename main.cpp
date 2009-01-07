@@ -4,6 +4,8 @@
 #include <Scene/RenderStateNode.h>
 #include <Renderers/OpenGL/LightRenderer.h>
 
+#include <Display/Frustum.h>
+
 #include <Devices/SDLInput.h>
 
 // Resources
@@ -157,6 +159,9 @@ void SetupShaders(Config& config) {
 }
 
 void SetupScene(Config& config) {
+    config.renderingScene->AddNode(config.setup.GetFrustum()->GetFrustumNode());
+    config.renderingScene->AddNode(config.setup.GetShadowMapFrustum()->GetFrustumNode());
+
     // Create scene nodes
     config.dynamicScene = new SceneNode();
 
