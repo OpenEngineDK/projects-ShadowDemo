@@ -111,6 +111,7 @@ void SetupLight(Config& config) {
     PointLightNode* pln = config.setup.GetShadowLightNode();
     pln->active = true;
 
+
     //draw something at the pos of the light node
     FacePtr face1(new Face(Vector<3, float>(0,0,0), Vector<3, float>(-10,0,10),
                         Vector<3, float>(-10,0,-10), Vector<3, float>(0,1,0),
@@ -122,7 +123,14 @@ void SetupLight(Config& config) {
     faceSet->Add(face1);
     faceSet->Add(face2);
     GeometryNode* geom = new GeometryNode(faceSet);
-    pln->AddNode(geom);
+    TransformationNode* light_geom_lift = new TransformationNode();
+    light_geom_lift->SetPosition(Vector<3, float>(0, 10, 0));
+
+    light_geom_lift->AddNode(geom);    
+
+
+    pln->AddNode(light_geom_lift);
+
 
     // Attach light node
     TransformationNode* light_tran = new TransformationNode();
