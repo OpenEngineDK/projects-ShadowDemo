@@ -455,6 +455,30 @@ void ShadowMapRenderer::RenderTest() {
 
     glBindTexture(GL_TEXTURE_2D, shadowMapID);
     CHECK_FOR_GL_ERROR();
+    
+    //glDisable(GL_LIGHTING);
+    //glEnable(GL_TEXTURE_2D);
+        
+    //           glBindTexture(GL_TEXTURE_2D, 1);
+
+//         glDisable(GL_TEXTURE_GEN_S);
+//         glDisable(GL_TEXTURE_GEN_T);
+//         glDisable(GL_TEXTURE_GEN_R);
+//         glDisable(GL_TEXTURE_GEN_Q); 
+        
+//         glColor4f(1.0, 0.5, 0.5, 1.0);
+    //     glBegin(GL_TRIANGLES);
+//         //glBegin(GL_QUADS);
+        
+//         glVertex3f(-200.0, -1000.0, -200.0);
+        
+//         glVertex3f(200.0, -1000.0, -200.0);
+        
+//         glVertex3f(0.0, -1000.0, 200.0);
+        
+//         //glVertex3f(-200.0, -100.0, 200.0);
+        
+//         glEnd();
 
     //glMatrixMode(GL_PROJECTION);
     //glLoadIdentity();
@@ -467,38 +491,55 @@ void ShadowMapRenderer::RenderTest() {
 
     //if (!orth)
     //    gluLookAt(0,1,4, 0,0,0, 0,1,0);
-    glColor4f(0.8, 0.8, 0.8, 1.0);
-    glBegin(GL_QUADS);
+//     glColor4f(0.8, 0.8, 0.8, 1.0);
+//     glBegin(GL_QUADS);
 
-    glTexCoord2f(0.0, 0.0);
-    glVertex3f(-100.0, -100.0, 50.);
+//     glTexCoord2f(0.0, 0.0);
+//     glVertex3f(-100.0, -100.0, 50.);
 
-    glTexCoord2f(1.0, 0.0);
-    glVertex3f(100.0, -100.0, 50.0);
+//     glTexCoord2f(1.0, 0.0);
+//     glVertex3f(100.0, -100.0, 50.0);
 
-    glTexCoord2f(1.0, 1.0);
-    glVertex3f(100.0, 100.0, 50.0);
+//     glTexCoord2f(1.0, 1.0);
+//     glVertex3f(100.0, 100.0, 50.0);
 
-    glTexCoord2f(0.0, 1.0);
-    glVertex3f(-100.0, 100.0, 50.0);
+//     glTexCoord2f(0.0, 1.0);
+//     glVertex3f(-100.0, 100.0, 50.0);
 
-    glEnd();
+//     glEnd();
     CHECK_FOR_GL_ERROR();
 
     glColor4f(1.0, 0.5, 0.5, 1.0);
     glBegin(GL_QUADS);
 
     //    glTexCoord2f(0.0, 0.0);
-    glVertex3f(-200.0, -50.0, -200.0);
+    glVertex3f(-100.0, 100.0, 100.0);
 
     //glTexCoord2f(1.0, 0.0);
-    glVertex3f(200.0, -50.0, -200.0);
+    glVertex3f(100.0, 100.0, 100.0);
 
     //glTexCoord2f(1.0, 1.0);
-    glVertex3f(200.0, -1000.0, 200.0);
+    glVertex3f(100.0, -200.0, 200.0);
 
     //glTexCoord2f(0.0, 1.0);
-    glVertex3f(-200.0, -1000.0, 200.0);
+    glVertex3f(-100.0, -200.0, 200.0);
+
+    glEnd();
+
+    glColor4f(1.0, 0.5, 0.5, 1.0);
+    glBegin(GL_QUADS);
+
+    //    glTexCoord2f(0.0, 0.0);
+    glVertex3f(-100.0, -200.0, 200.0);
+
+    //glTexCoord2f(1.0, 0.0);
+    glVertex3f(100.0, -200.0, 200.0);
+
+    //glTexCoord2f(1.0, 1.0);
+    glVertex3f(100.0, -200.0, 400.0);
+
+    //glTexCoord2f(0.0, 1.0);
+    glVertex3f(-100.0, -200.0, 400.0);
 
     glEnd();
     CHECK_FOR_GL_ERROR();

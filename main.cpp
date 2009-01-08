@@ -95,9 +95,9 @@ void SetupCamera(Config& config) {
     config.camera        = new FollowCamera( *config.setup.GetCamera() );
     config.setup.SetCamera(*config.camera);
 
-    config.camera->SetPosition(Vector<3, float>(400, 400, -100));
-    //config.camera->LookAt(0,-100,0);
-    config.camera->LookAt(0, 0, 0);
+    config.camera->SetPosition(Vector<3, float>(800, 400, -200));
+    config.camera->LookAt(0, 0,0);
+    //    config.camera->LookAt(0, 0, 0);
 }
 
 void SetupShadow(Config& config) {
@@ -146,7 +146,7 @@ void SetupLight(Config& config) {
 
     // Attach light node
     TransformationNode* light_tran = new TransformationNode();
-    light_tran->SetPosition(Vector<3, float>(0, 100, 0));
+    light_tran->SetPosition(Vector<3, float>(0, 100, 200));
     //    light_tran->AddNode(config.lightNode);
     light_tran->AddNode(pln);
 
@@ -170,18 +170,13 @@ void SetupLight(Config& config) {
 }
 
 void SetupDevices(Config& config) {
-//     MoveHandler* move_h = new MoveHandler(*config.camera, config.setup.GetMouse());
-//     config.setup.GetKeyboard().KeyEvent().Attach(*move_h);
-//     config.setup.GetEngine().InitializeEvent().Attach(*move_h);
-//     config.setup.GetEngine().ProcessEvent().Attach(*move_h);
-//     config.setup.GetEngine().DeinitializeEvent().Attach(*move_h);
+    MoveHandler* move_h = new MoveHandler(*config.camera, config.setup.GetMouse());
+    config.setup.GetKeyboard().KeyEvent().Attach(*move_h);
+    config.setup.GetEngine().InitializeEvent().Attach(*move_h);
+    config.setup.GetEngine().ProcessEvent().Attach(*move_h);
+    config.setup.GetEngine().DeinitializeEvent().Attach(*move_h);
 
     //To control light
-    MoveHandler* move_h_l = new MoveHandler(*config.setup.GetShadowMapCamera(), *(new SDLInput())/* config.setup.GetMouse()*/);
-    config.setup.GetKeyboard().KeyEvent().Attach(*move_h_l);
-    config.setup.GetEngine().InitializeEvent().Attach(*move_h_l);
-    config.setup.GetEngine().ProcessEvent().Attach(*move_h_l);
-    config.setup.GetEngine().DeinitializeEvent().Attach(*move_h_l);
 
     KeyboardHandler* key_h = new KeyboardHandler(config.lightTrans);
     config.setup.GetKeyboard().KeyEvent().Attach(*key_h);
@@ -193,13 +188,12 @@ void SetupShaders(Config& config) {
 
 void SetupScene(Config& config) {
     //config.renderingScene->AddNode(config.setup.GetFrustum()->GetFrustumNode());
-    config.renderingScene->AddNode(config.setup.GetShadowMapFrustum()->GetFrustumNode());
+    //config.renderingScene->AddNode(config.setup.GetShadowMapFrustum()->GetFrustumNode());
 
     // Create scene nodes
     config.dynamicScene = new SceneNode();
 
     config.renderingScene->AddNode(config.dynamicScene);
-
 
     config.dynamicScene->AddNode(config.lightTrans);
 
@@ -229,7 +223,11 @@ void SetupScene(Config& config) {
         mod_tran->AddNode(mod_node);
  
         if(firstModel){
-            config.camera->Follow(mod_tran);
+            //config.camera->Follow(mod_tran);
+            mod_tran->Move(0, 0, 200);
+            firstModel = false;
+        }else{
+            mod_tran->Move(0, -50, 250);
         }
         
         current->AddNode(mod_tran);

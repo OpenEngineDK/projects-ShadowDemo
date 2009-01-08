@@ -86,7 +86,7 @@ void ShadowMapRenderingView::Handle(RenderingEventArg arg) {
         parent->GetAccumulatedTransformations(position, rotation);
     }
     volume->SetPosition(*position);
-    logger.info << volume->GetPosition() << "\n" << logger.end;
+    //logger.info << volume->GetPosition() << "\n" << logger.end;
 
     // If no viewing volume is set for the viewport ignore it.
     if (volume == NULL) return;
@@ -125,6 +125,9 @@ void ShadowMapRenderingView::Handle(RenderingEventArg arg) {
 
     ShadowMapRenderer* shadRend = static_cast<const ShadowMapRenderer*>(&arg.renderer);
     GLuint texName = shadRend->GetShadowMapID();
+
+    //logger.info << "texName: " << texName << logger.end;
+    
     glBindTexture(GL_TEXTURE_2D, texName);
     // overwrite the previous shadow map
     // TODO: get resolution from viewing volume

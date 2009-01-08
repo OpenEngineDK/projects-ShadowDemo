@@ -108,18 +108,21 @@ ShadowMapSetup::ShadowMapSetup(std::string title)
 
     , shadowMapFrame(new SDLFrame(800,600,32))
     , shadowMapViewport(new Viewport(*shadowMapFrame))
-    , shadowMapCamera(new Camera(*(new InterpolatedViewingVolume(*(new ViewingVolume())))))
+    , shadowMapCamera(new Camera(*(new ViewingVolume())))
     , shadowMapFrustum(new Frustum(*shadowMapCamera))
     , shadowMapRenderingview(new ExtShadowMapRenderingView(*shadowMapViewport))
     , shadowRenderingview(new ExtShadowRenderingView(*viewport, *shadowMapViewport))
 {
     //frustum debug test
-    frustum->VisualizeClipping(true);
-    shadowMapFrustum->VisualizeClipping(true);
+    //frustum->VisualizeClipping(true);
+    //shadowMapFrustum->VisualizeClipping(true);
+
+    //frustum->SetFar(1200);
+    //shadowMapFrustum->SetFar(1200);
     //shadow
     shadowMapViewport->SetViewingVolume(shadowMapFrustum);
     //shadowMapCamera->SetPosition(Vector<3, float>(0,0,0));
-    shadowMapCamera->SetPosition(Vector<3, float>(50,200,50));
+    shadowMapCamera->SetPosition(Vector<3, float>(0.0,160.0,0.0));
     shadowMapCamera->LookAt(0,0,0);
 
     // create a logger to std out
