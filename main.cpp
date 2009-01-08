@@ -119,6 +119,18 @@ void SetupLight(Config& config) {
     FacePtr face2(new Face(Vector<3, float>(0,0,0), Vector<3, float>(10,0,-10),
                         Vector<3, float>(10,0,10), Vector<3, float>(0,1,0),
                         Vector<3, float>(0,1,0), Vector<3, float>(0,1,0)));
+
+
+    Vector<4,float> color = Vector<4,float>(1.0,0.0,0.0,0.0);
+
+
+    face1->colr[0] = color;
+    face1->colr[1] = color;
+    face1->colr[2] = color;
+    face2->colr[0] = color;
+    face2->colr[1] = color;
+    face2->colr[2] = color;
+
     FaceSet* faceSet = new FaceSet();
     faceSet->Add(face1);
     faceSet->Add(face2);
