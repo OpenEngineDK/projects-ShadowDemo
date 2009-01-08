@@ -112,11 +112,15 @@ void SetupLight(Config& config) {
     pln->active = true;
 
     //draw something at the pos of the light node
-    FacePtr face(new Face(Vector<3, float>(-10,0,10), Vector<3, float>(10,0,10),
-                        Vector<3, float>(0,0,15), Vector<3, float>(0,1,0),
+    FacePtr face1(new Face(Vector<3, float>(0,0,0), Vector<3, float>(-10,0,10),
+                        Vector<3, float>(-10,0,-10), Vector<3, float>(0,1,0),
+                        Vector<3, float>(0,1,0), Vector<3, float>(0,1,0)));
+    FacePtr face2(new Face(Vector<3, float>(0,0,0), Vector<3, float>(10,0,-10),
+                        Vector<3, float>(10,0,10), Vector<3, float>(0,1,0),
                         Vector<3, float>(0,1,0), Vector<3, float>(0,1,0)));
     FaceSet* faceSet = new FaceSet();
-    faceSet->Add(face);
+    faceSet->Add(face1);
+    faceSet->Add(face2);
     GeometryNode* geom = new GeometryNode(faceSet);
     pln->AddNode(geom);
 
