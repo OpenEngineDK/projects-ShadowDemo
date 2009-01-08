@@ -46,4 +46,4 @@ linux /libraries http://www.openengine.dk/data/libraries/collada-linux.tar.gz
 
 # project data
 any /projects/ShadowDemo/data http://openengine.dk/data/models/FutureTank.zip
-any /projects/ShadowDemo/data http://openengine.dk/data/models/SmallLevel.zip
+any /projects/ShadowDemo/data http://openengine.dk/data/models/SpeedBird.zip
