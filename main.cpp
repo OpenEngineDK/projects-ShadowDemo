@@ -25,7 +25,7 @@
 #include <Physics/FixedTimeStepPhysics.h>
 #include <Physics/RigidBox.h>
 
-
+#include "KeyboardHandler.h"
 
 // Additional namespaces
 using namespace OpenEngine::Core;
@@ -43,13 +43,13 @@ using OpenEngine::Utils::ShadowMapSetup;
 // Configuration structure to pass around to the setup methods
 struct Config {
     ShadowMapSetup        setup;
-    PointLightNode*       lightNode;
+    TransformationNode*   lightTrans;
     FollowCamera*         camera;
     ISceneNode*           renderingScene;
     ISceneNode*           dynamicScene;
     Config()
         : setup(ShadowMapSetup("ShadowDemo"))
-        , lightNode(NULL)
+        , lightTrans(NULL)
         , camera(NULL)
         , renderingScene(NULL)
         , dynamicScene(NULL)
@@ -120,13 +120,19 @@ void SetupLight(Config& config) {
     GeometryNode* geom = new GeometryNode(faceSet);
     pln->AddNode(geom);
 
+    // Attach light node
+    TransformationNode* light_tran = new TransformationNode();
+    light_tran->SetPosition(Vector<3, float>(0, 100, 0));
+    //    light_tran->AddNode(config.lightNode);
+    light_tran->AddNode(pln);
+
     /*    pln->constAtt = 1.0;
     pln->linearAtt = 0.0;
     pln->quadAtt = 0.0;
     pln->ambient = Vector<4, float>(0,0,0,1);
     pln->diffuse = Vector<4, float>(0,0,0,1);
     pln->specular = Vector<4, float>(0,0,0,1);*/
-    config.lightNode = pln;
+    config.lightTrans = light_tran;
 
     LightRenderer* lr = new LightRenderer(*config.camera);
     config.setup.GetRenderer().InitializeEvent().Attach(*lr);
@@ -152,6 +158,9 @@ void SetupDevices(Config& config) {
     config.setup.GetEngine().InitializeEvent().Attach(*move_h_l);
     config.setup.GetEngine().ProcessEvent().Attach(*move_h_l);
     config.setup.GetEngine().DeinitializeEvent().Attach(*move_h_l);
+
+    KeyboardHandler* key_h = new KeyboardHandler(config.lightTrans);
+    config.setup.GetKeyboard().KeyEvent().Attach(*key_h);
 }
 
 void SetupShaders(Config& config) {
@@ -159,7 +168,7 @@ void SetupShaders(Config& config) {
 }
 
 void SetupScene(Config& config) {
-    config.renderingScene->AddNode(config.setup.GetFrustum()->GetFrustumNode());
+    //config.renderingScene->AddNode(config.setup.GetFrustum()->GetFrustumNode());
     config.renderingScene->AddNode(config.setup.GetShadowMapFrustum()->GetFrustumNode());
 
     // Create scene nodes
@@ -167,12 +176,8 @@ void SetupScene(Config& config) {
 
     config.renderingScene->AddNode(config.dynamicScene);
 
-    // Attach light node
-    TransformationNode* light_tran = new TransformationNode();
-    light_tran->SetPosition(Vector<3, float>(0, 100, 0));
-    //    light_tran->AddNode(config.lightNode);
-    light_tran->AddNode(config.setup.GetShadowLightNode());
-    config.dynamicScene->AddNode(light_tran);
+
+    config.dynamicScene->AddNode(config.lightTrans);
 
     ISceneNode* current = config.dynamicScene;
 
