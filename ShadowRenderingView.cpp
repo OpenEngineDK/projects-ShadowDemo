@@ -23,6 +23,8 @@
 #include <Meta/OpenGL.h>
 #include <Math/Math.h>
 
+#include <Logging/Logger.h>
+
 namespace OpenEngine {
 namespace Renderers {
 namespace OpenGL {
@@ -103,7 +105,6 @@ void ShadowRenderingView::Handle(RenderingEventArg arg) {
     // Clear the screen and the depth buffer.
     glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
-    //TEST
     GLfloat tmpMatrix[16];
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
@@ -113,22 +114,20 @@ void ShadowRenderingView::Handle(RenderingEventArg arg) {
     glLoadIdentity();
     glTranslatef(0.5, 0.5, 0.0);
     glScalef(0.5, 0.5, 1.0);
-//     gluPerspective(45.0,800/600,0.3,1000.0);
-//     gluLookAt(0,100,0, 0,0,0, 0,0,-1);
     
-     // Setup OpenGL with the volumes projection matrix
-     Matrix<4,4,float> projMatrix = shadowMapViewingVolume->GetProjectionMatrix();
-     float arr[16] = {0};
-     projMatrix.ToArray(arr);
-     glMultMatrixf(arr);
-     CHECK_FOR_GL_ERROR();
+    // Setup OpenGL with the volumes projection matrix
+    Matrix<4,4,float> projMatrix = shadowMapViewingVolume->GetProjectionMatrix();
+    float arr[16] = {0};
+    projMatrix.ToArray(arr);
+    glMultMatrixf(arr);
+    CHECK_FOR_GL_ERROR();
 
-     // Get the view matrix and apply it
-     Matrix<4,4,float> matrix = shadowMapViewingVolume->GetViewMatrix();
-     float f[16] = {0};
-     matrix.ToArray(f);
-     glMultMatrixf(f);
-     CHECK_FOR_GL_ERROR();
+    // Get the view matrix and apply it
+    Matrix<4,4,float> matrix = shadowMapViewingVolume->GetViewMatrix();
+    float f[16] = {0};
+    matrix.ToArray(f);
+    glMultMatrixf(f);
+    CHECK_FOR_GL_ERROR();
 
     glGetFloatv(GL_MODELVIEW_MATRIX, tmpMatrix);
     glPopMatrix();
@@ -137,25 +136,6 @@ void ShadowRenderingView::Handle(RenderingEventArg arg) {
 
     l.Transpose();
     l.ToArray(tmpMatrix);
-    
-    //test
-        //Set up texture coordinate generation.
-//     glTexGeni(GL_S, GL_TEXTURE_GEN_MODE, GL_EYE_LINEAR);
-//     glTexGenfv(GL_S, GL_EYE_PLANE, &tmpMatrix[0]);
-//     glEnable(GL_TEXTURE_GEN_S);
-
-//     glTexGeni(GL_T, GL_TEXTURE_GEN_MODE, GL_EYE_LINEAR);
-//     glTexGenfv(GL_T, GL_EYE_PLANE, &tmpMatrix[4]);
-//     glEnable(GL_TEXTURE_GEN_T);
-
-//     glTexGeni(GL_R, GL_TEXTURE_GEN_MODE, GL_EYE_LINEAR);
-//     glTexGenfv(GL_R, GL_EYE_PLANE, &tmpMatrix[8]);
-//     glEnable(GL_TEXTURE_GEN_R);
-
-//     glTexGeni(GL_Q, GL_TEXTURE_GEN_MODE, GL_EYE_LINEAR);
-//     glTexGenfv(GL_Q, GL_EYE_PLANE, &tmpMatrix[12]);
-//     glEnable(GL_TEXTURE_GEN_Q);
-    //endtest
 
     glTexGeni(GL_S, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR);
     glTexGeni(GL_T, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR);
@@ -172,25 +152,6 @@ void ShadowRenderingView::Handle(RenderingEventArg arg) {
     glEnable(GL_TEXTURE_GEN_R);
     glEnable(GL_TEXTURE_GEN_Q);
 
-    //test
-//     glBindTexture(GL_TEXTURE_2D, 1);
-//     glEnable(GL_TEXTURE_2D);
-
-//     //Enable shadow comparison
-//     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE_ARB, GL_COMPARE_R_TO_TEXTURE);
-
-//     //Shadow comparison should be true (ie not in shadow) if r<=texture
-//     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC_ARB, GL_LEQUAL);
-
-//     //Shadow comparison should generate an INTENSITY result
-//     glTexParameteri(GL_TEXTURE_2D, GL_DEPTH_TEXTURE_MODE_ARB, GL_INTENSITY);
-
-//     //Set alpha test to discard false comparisons
-//     glAlphaFunc(GL_GEQUAL, 0.99f);
-//     glEnable(GL_ALPHA_TEST); 
-
-    //end test
-
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -198,36 +159,12 @@ void ShadowRenderingView::Handle(RenderingEventArg arg) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
     glTexParameteri(GL_TEXTURE_2D, GL_DEPTH_TEXTURE_MODE, GL_LUMINANCE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_R_TO_TEXTURE);
+
     glEnable(GL_TEXTURE_2D);
-    //TEST_END
+     
+    glBindTexture(GL_TEXTURE_2D, 1);
     
-    Render(&arg.renderer, arg.renderer.GetSceneRoot());
-    
-    // glDisable(GL_TEXTURE_GEN_S);
-//     glDisable(GL_TEXTURE_GEN_T);
-//     glDisable(GL_TEXTURE_GEN_R);
-//     glDisable(GL_TEXTURE_GEN_Q);
-
-     glDisable(GL_LIGHTING);
-     glEnable(GL_TEXTURE_2D);
-    
-     glBindTexture(GL_TEXTURE_2D, 1);
-
-//     glColor4f(1.0, 0.5, 0.5, 1.0);
-//     glBegin(GL_QUADS);
-
-//     glVertex3f(-200.0, -500.0, -200.0);
-   
-//     glVertex3f(200.0, -500.0, -200.0);
-   
-//     glVertex3f(200.0, -500.0, 200.0);
-   
-//     glVertex3f(-200.0, -500.0, 200.0);
-
-//     glEnd();  
-    
-    
-    
+    Render(&arg.renderer, arg.renderer.GetSceneRoot());    
 }
 
 /**
@@ -446,35 +383,12 @@ void ShadowRenderingView::VisitGeometryNode(GeometryNode* node) {
     if (faces == NULL) return;
     
     glDisable(GL_LIGHTING);
-    glEnable(GL_TEXTURE_2D);
-    CHECK_FOR_GL_ERROR();
     
-    glBindTexture(GL_TEXTURE_2D, 1);
-    CHECK_FOR_GL_ERROR();
-
     glDisable(GL_TEXTURE_GEN_S);
     glDisable(GL_TEXTURE_GEN_T);
     glDisable(GL_TEXTURE_GEN_R);
     glDisable(GL_TEXTURE_GEN_Q);
-    
-
-//         glColor4f(1.0, 0.5, 0.5, 1.0);
-//     glBegin(GL_QUADS);
-
-//     //    glTexCoord2f(0.0, 0.0);
-//     glVertex3f(-200.0, -50.0, -200.0);
-
-//     //glTexCoord2f(1.0, 0.0);
-//     glVertex3f(200.0, -50.0, -200.0);
-
-//     //glTexCoord2f(1.0, 1.0);
-//     glVertex3f(200.0, -1000.0, 200.0);
-
-//     //glTexCoord2f(0.0, 1.0);
-//     glVertex3f(-200.0, -1000.0, 200.0);
-
-//     glEnd();
-
+    CHECK_FOR_GL_ERROR();
 
     // for each face ...
     for (itr = faces->begin(); itr != faces->end(); itr++) {
@@ -491,7 +405,6 @@ void ShadowRenderingView::VisitGeometryNode(GeometryNode* node) {
             Vector<4,float> c = f->colr[i];
             glTexCoord2f(t[0],t[1]);
             glColor4f (c[0],c[1],c[2],c[3]);
-            //glColor4f (0.8,0.3,0.3,1.0);
             glNormal3f(n[0],n[1],n[2]);
             // apply tangent and binormal per vertex for the shader to use
             if (currentShader != NULL) {

@@ -118,10 +118,10 @@ ShadowMapSetup::ShadowMapSetup(std::string title)
     //shadowMapFrustum->VisualizeClipping(true);
 
     //frustum->SetFar(1200);
-    //shadowMapFrustum->SetFar(1200);
+    //shadowMapFrustum->SetFar(1300);
+    //shadowMapFrustum->SetNear(800);
     //shadow
     shadowMapViewport->SetViewingVolume(shadowMapFrustum);
-    //shadowMapCamera->SetPosition(Vector<3, float>(0,0,0));
     shadowMapCamera->SetPosition(Vector<3, float>(0.0,160.0,0.0));
     shadowMapCamera->LookAt(0,0,0);
 
@@ -150,13 +150,7 @@ ShadowMapSetup::ShadowMapSetup(std::string title)
     renderer->InitializeEvent().Attach(*(new TextureLoadOnInit(*textureloader)));
     // bind default keys
     input->KeyEvent().Attach(*(new QuitHandler(*engine)));
-    // setup hud
-    renderer->PostProcessEvent().Attach(*hud);
-
-    //engine->InitializeEvent().Attach(*shadowMapFrame);
-    //engine->ProcessEvent().Attach(*shadowMapFrame);
-    //engine->DeinitializeEvent().Attach(*shadowMapFrame);
-
+    
     renderer->PreProcessEvent().Attach(*shadowMapRenderingview);
 }
 
