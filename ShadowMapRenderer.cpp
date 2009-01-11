@@ -124,10 +124,6 @@ void ShadowMapRenderer::Handle(InitializeEventArg arg) {
 
     CHECK_FOR_GL_ERROR();
     
-    // Enable lighting
-    //glEnable(GL_LIGHTING);
-    //glEnable(GL_LIGHT0);
-
     // Enable depth testing
     glEnable(GL_DEPTH_TEST);						   
     CHECK_FOR_GL_ERROR();
@@ -155,7 +151,6 @@ void ShadowMapRenderer::Handle(ProcessEventArg arg) {
     RenderingEventArg rarg(*this, arg.start, arg.approx);
     this->preProcess.Notify(rarg);
     this->stage = RENDERER_PROCESS;
-    // gluLookAt(0,0,0, 200, 200, 0, 0,1,0);
 
     CHECK_FOR_GL_ERROR();
     this->process.Notify(rarg);
@@ -255,9 +250,6 @@ void ShadowMapRenderer::RebindTexture(ITextureResourcePtr texr) {
         texr->SetID(texid);
     } else 
         texid = texr->GetID();
-
-    // @todo: move this to some kind of destructor
-    //glDeleteTextures(1, &texid); //ignored by gl if not loaded or 0
 
     glBindTexture(GL_TEXTURE_2D, texid);
     CHECK_FOR_GL_ERROR();
@@ -441,11 +433,7 @@ void ShadowMapRenderer::DrawPoint(Vector<3,float> point, Vector<3,float> color ,
 }
 
 void ShadowMapRenderer::RenderTest() {
-    //GLboolean l = glIsEnabled(GL_LIGHTING);
-    //GLboolean t = glIsEnabled(GL_TEXTURE_2D);
 
-    //glClearColor(0.0, 0.0, 0.0, 1.0);
-    //glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
     CHECK_FOR_GL_ERROR();
 
     // quad rendering of texture
@@ -456,94 +444,28 @@ void ShadowMapRenderer::RenderTest() {
     glBindTexture(GL_TEXTURE_2D, shadowMapID);
     CHECK_FOR_GL_ERROR();
     
-    //glDisable(GL_LIGHTING);
-    //glEnable(GL_TEXTURE_2D);
-        
-    //           glBindTexture(GL_TEXTURE_2D, 1);
 
-//         glDisable(GL_TEXTURE_GEN_S);
-//         glDisable(GL_TEXTURE_GEN_T);
-//         glDisable(GL_TEXTURE_GEN_R);
-//         glDisable(GL_TEXTURE_GEN_Q); 
-        
-//         glColor4f(1.0, 0.5, 0.5, 1.0);
-    //     glBegin(GL_TRIANGLES);
-//         //glBegin(GL_QUADS);
-        
-//         glVertex3f(-200.0, -1000.0, -200.0);
-        
-//         glVertex3f(200.0, -1000.0, -200.0);
-        
-//         glVertex3f(0.0, -1000.0, 200.0);
-        
-//         //glVertex3f(-200.0, -100.0, 200.0);
-        
-//         glEnd();
-
-    //glMatrixMode(GL_PROJECTION);
-    //glLoadIdentity();
-    //bool orth = false;
-    //if (!orth)
-    //    gluPerspective(45.0,800/600,0.3,1000.0);
-    //else
-    //    glOrtho(-1.0, 1.0, -1.0, 1.0, -1.0, 1.0);
-    //CHECK_FOR_GL_ERROR();
-
-    //if (!orth)
-    //    gluLookAt(0,1,4, 0,0,0, 0,1,0);
-//     glColor4f(0.8, 0.8, 0.8, 1.0);
-//     glBegin(GL_QUADS);
-
-//     glTexCoord2f(0.0, 0.0);
-//     glVertex3f(-100.0, -100.0, 50.);
-
-//     glTexCoord2f(1.0, 0.0);
-//     glVertex3f(100.0, -100.0, 50.0);
-
-//     glTexCoord2f(1.0, 1.0);
-//     glVertex3f(100.0, 100.0, 50.0);
-
-//     glTexCoord2f(0.0, 1.0);
-//     glVertex3f(-100.0, 100.0, 50.0);
-
-//     glEnd();
     CHECK_FOR_GL_ERROR();
 
     glColor4f(1.0, 0.5, 0.5, 1.0);
-    glBegin(GL_QUADS);
 
-    //    glTexCoord2f(0.0, 0.0);
+    glBegin(GL_QUADS);
     glVertex3f(-100.0, 100.0, 100.0);
-
-    //glTexCoord2f(1.0, 0.0);
     glVertex3f(100.0, 100.0, 100.0);
-
-    //glTexCoord2f(1.0, 1.0);
     glVertex3f(100.0, -200.0, 200.0);
-
-    //glTexCoord2f(0.0, 1.0);
     glVertex3f(-100.0, -200.0, 200.0);
-
     glEnd();
 
     glColor4f(1.0, 0.5, 0.5, 1.0);
+
     glBegin(GL_QUADS);
-
-    //    glTexCoord2f(0.0, 0.0);
     glVertex3f(-100.0, -200.0, 200.0);
-
-    //glTexCoord2f(1.0, 0.0);
     glVertex3f(100.0, -200.0, 200.0);
-
-    //glTexCoord2f(1.0, 1.0);
     glVertex3f(100.0, -200.0, 400.0);
-
-    //glTexCoord2f(0.0, 1.0);
     glVertex3f(-100.0, -200.0, 400.0);
-
     glEnd();
-    CHECK_FOR_GL_ERROR();
 
+    CHECK_FOR_GL_ERROR();
 
     glDisable(GL_TEXTURE_2D);
     glEnable(GL_LIGHTING);

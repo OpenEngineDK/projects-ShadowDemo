@@ -12,9 +12,6 @@
 
 #include <Meta/OpenGL.h>
 #include <Renderers/IRenderingView.h>
-#include <Scene/RenderStateNode.h>
-#include <Scene/BlendingNode.h>
-#include <Scene/PointLightNode.h>
 #include <vector>
 
 namespace OpenEngine {
@@ -31,22 +28,13 @@ using namespace std;
  */
 class ShadowMapRenderingView : virtual public IRenderingView {
     IRenderer* renderer;
-    vector<RenderStateNode*> stateStack;
 
-    void RenderLine(Vector<3,float> vert,
-                    Vector<3,float> norm,
-                    Vector<3,float> color);
 
 public:
     ShadowMapRenderingView(Viewport& viewport);
     virtual ~ShadowMapRenderingView();
     void VisitGeometryNode(GeometryNode* node);
-    void VisitVertexArrayNode(VertexArrayNode* node);
     void VisitTransformationNode(TransformationNode* node);
-    void VisitRenderStateNode(RenderStateNode* node);
-    void VisitRenderNode(RenderNode* node);
-    void VisitDisplayListNode(DisplayListNode* node);
-    void VisitBlendingNode(BlendingNode* node);
     void Render(IRenderer* renderer, ISceneNode* root);
     void Handle(RenderingEventArg arg);
     IRenderer* GetRenderer();
@@ -55,30 +43,9 @@ public:
     PointLightNode* GetLightNode();
 
 private:
-    bool renderBinormal, renderTangent, renderSoftNormal, renderHardNormal;
-    bool renderTexture, renderShader;
-    int currentTexture;
-    IShaderResourcePtr currentShader;
-    int binormalid;
-    int tangentid;
     Vector<4,float> backgroundColor;
     PointLightNode* lightNode;
 
-    void EnableBlending(BlendingNode::BlendingFactor source, 
-                        BlendingNode::BlendingFactor destination,
-                        BlendingNode::BlendingEquation equation);
-    void DisableBlending();
-
-    inline void EnableBlending(GLenum source, GLenum destination,
-                               GLenum eqation);
-    inline GLenum ConvertBlendingFactor(BlendingNode::BlendingFactor factor);
-    inline GLenum ConvertBlendingEquation(BlendingNode::BlendingEquation equation);
-    inline void RenderDebugGeometry(FacePtr face);
-    inline void RenderBinormals(FacePtr face);
-    inline void RenderTangents(FacePtr face);
-    inline void RenderNormals(FacePtr face);
-    inline void RenderHardNormal(FacePtr face);
-    inline void ApplyMaterial(MaterialPtr mat);
     inline void ApplyRenderState(RenderStateNode* node);
 };
 
