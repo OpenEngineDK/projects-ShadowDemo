@@ -1,12 +1,8 @@
 
 # Project source code list
 SET( SHADOWDEMO_SOURCES
-  # Add all the cpp source files here
   main.cpp
-#  ShadowMapRenderer.cpp
   ShadowMapSetup.cpp
-#  ShadowMapRenderingView.cpp
-#  ShadowRenderingView.cpp
 )
 
 # todo get rid of this!@#!

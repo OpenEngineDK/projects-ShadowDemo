@@ -116,7 +116,7 @@ ShadowMapSetup::ShadowMapSetup(std::string title)
     //frustum debug test
     //frustum->VisualizeClipping(true);
     //shadowMapFrustum->VisualizeClipping(true);
-
+ 
     //frustum->SetFar(1200);
     //shadowMapFrustum->SetFar(1300);
     //shadowMapFrustum->SetNear(800);

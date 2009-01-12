@@ -90,8 +90,8 @@ void SetupCamera(Config& config) {
     config.camera        = new FollowCamera( *config.setup.GetCamera() );
     config.setup.SetCamera(*config.camera);
 
-    config.camera->SetPosition(Vector<3, float>(121, 113, 250));
-    config.camera->LookAt(0, -50,300);
+    config.camera->SetPosition(Vector<3, float>(400, 200, 400));
+    config.camera->LookAt(0, 0, 0);
     //    config.camera->LookAt(0, 0, 0);
 }
 
@@ -135,7 +135,7 @@ void SetupLight(Config& config) {
 
     // Attach light node
     TransformationNode* light_tran = new TransformationNode();
-    light_tran->SetPosition(Vector<3, float>(0, 0, 300));
+    light_tran->SetPosition(Vector<3, float>(0, 100, 200));
         light_tran->AddNode(pln);
     config.lightTrans = light_tran;
 
@@ -197,10 +197,10 @@ void SetupScene(Config& config) {
  
         if(firstModel){
             //config.camera->Follow(mod_tran);
-            mod_tran->Move(0, -50, 300);
+            mod_tran->Move(0, 30, 190);
             firstModel = false;
         }else{
-            mod_tran->Move(0, -50, 250);
+            mod_tran->Move(0, -50, 230);
         }
         
         current->AddNode(mod_tran);
