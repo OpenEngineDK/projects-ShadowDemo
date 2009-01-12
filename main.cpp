@@ -3,9 +3,7 @@
 #include <Display/FollowCamera.h>
 #include <Scene/RenderStateNode.h>
 #include <Renderers/OpenGL/LightRenderer.h>
-
 #include <Display/Frustum.h>
-
 #include <Devices/SDLInput.h>
 
 // Resources
@@ -92,14 +90,12 @@ void SetupCamera(Config& config) {
 
     config.camera->SetPosition(Vector<3, float>(400, 200, 400));
     config.camera->LookAt(0, 0, 0);
-    //    config.camera->LookAt(0, 0, 0);
 }
 
 void SetupLight(Config& config) {
     // Set up a light node
     PointLightNode* pln = config.setup.GetShadowLightNode();
     pln->active = true;
-
 
     //draw something at the pos of the light node
     FacePtr face1(new Face(Vector<3, float>(0,0,0), Vector<3, float>(-10,0,10),
@@ -111,7 +107,6 @@ void SetupLight(Config& config) {
 
 
     Vector<4,float> color = Vector<4,float>(1.0,0.0,0.0,0.0);
-
 
     face1->colr[0] = color;
     face1->colr[1] = color;
@@ -129,9 +124,7 @@ void SetupLight(Config& config) {
 
     light_geom_lift->AddNode(geom);    
 
-
     pln->AddNode(light_geom_lift);
-
 
     // Attach light node
     TransformationNode* light_tran = new TransformationNode();
@@ -147,7 +140,6 @@ void SetupLight(Config& config) {
     RenderStateNode* rsn = new RenderStateNode();
     rsn->EnableOption(RenderStateNode::LIGHTING);
     config.renderingScene = rsn;
-
 }
 
 void SetupDevices(Config& config) {
