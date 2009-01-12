@@ -59,28 +59,23 @@ struct Config {
 };
 
 void SetupResources(Config&);
-void SetupShadow(Config&);
 void SetupLight(Config&);
 void SetupCamera(Config&);
 void SetupDevices(Config&);
-void SetupShaders(Config&);
 void SetupScene(Config&);
 
 int main(int argc, char** argv) {
     Config config;
     SetupResources(config);
     SetupCamera(config);
-
     SetupLight(config);
-    SetupShadow(config);
     SetupDevices(config);
-    SetupShaders(config);
     SetupScene(config);
 
-    //    ofstream out("test.dot", ios::out); // create output file
-    //DotVisitor dot;                        // create dot visitor
-    //dot.Write(*config.renderingScene, &out);           // build and write the graph
-    //out.close();                           // close your file
+    //ofstream out("test.dot", ios::out);      // create output file
+    //DotVisitor dot;                          // create dot visitor
+    //dot.Write(*config.renderingScene, &out); // build and write the graph
+    //out.close();                             // close your file
     
     config.setup.SetScene(*config.renderingScene);
     config.setup.GetEngine().Start();
@@ -95,15 +90,9 @@ void SetupCamera(Config& config) {
     config.camera        = new FollowCamera( *config.setup.GetCamera() );
     config.setup.SetCamera(*config.camera);
 
-    config.camera->SetPosition(Vector<3, float>(800, 400, -200));
-    config.camera->LookAt(0, 0,0);
+    config.camera->SetPosition(Vector<3, float>(121, 113, 250));
+    config.camera->LookAt(0, -50,300);
     //    config.camera->LookAt(0, 0, 0);
-}
-
-void SetupShadow(Config& config) {
-    //ShadowMapBuilder* sb = new ShadowMapBuilder(config.camera);
-    //config.setup.GetRenderer().InitializeEvent().Attach(*sb);
-    //config.setup.GetRenderer().PreProcessEvent().Attach(*sb);
 }
 
 void SetupLight(Config& config) {
@@ -146,16 +135,8 @@ void SetupLight(Config& config) {
 
     // Attach light node
     TransformationNode* light_tran = new TransformationNode();
-    light_tran->SetPosition(Vector<3, float>(0, 100, 200));
-    //    light_tran->AddNode(config.lightNode);
-    light_tran->AddNode(pln);
-
-    /*    pln->constAtt = 1.0;
-    pln->linearAtt = 0.0;
-    pln->quadAtt = 0.0;
-    pln->ambient = Vector<4, float>(0,0,0,1);
-    pln->diffuse = Vector<4, float>(0,0,0,1);
-    pln->specular = Vector<4, float>(0,0,0,1);*/
+    light_tran->SetPosition(Vector<3, float>(0, 0, 300));
+        light_tran->AddNode(pln);
     config.lightTrans = light_tran;
 
     LightRenderer* lr = new LightRenderer(*config.camera);
@@ -177,19 +158,11 @@ void SetupDevices(Config& config) {
     config.setup.GetEngine().DeinitializeEvent().Attach(*move_h);
 
     //To control light
-
     KeyboardHandler* key_h = new KeyboardHandler(config.lightTrans);
     config.setup.GetKeyboard().KeyEvent().Attach(*key_h);
 }
 
-void SetupShaders(Config& config) {
-    //GLSLResource* res = new GLSLResource("shaders/test.frag");
-}
-
 void SetupScene(Config& config) {
-    //config.renderingScene->AddNode(config.setup.GetFrustum()->GetFrustumNode());
-    //config.renderingScene->AddNode(config.setup.GetShadowMapFrustum()->GetFrustumNode());
-
     // Create scene nodes
     config.dynamicScene = new SceneNode();
 
@@ -224,7 +197,7 @@ void SetupScene(Config& config) {
  
         if(firstModel){
             //config.camera->Follow(mod_tran);
-            mod_tran->Move(0, 0, 200);
+            mod_tran->Move(0, -50, 300);
             firstModel = false;
         }else{
             mod_tran->Move(0, -50, 250);
@@ -235,14 +208,4 @@ void SetupScene(Config& config) {
     }
     mfile->close();
     delete mfile;
-
-    //Ground
-    /*FacePtr f1(new Face(Vector<3, float>(-200,0,200), Vector<3, float>(200,0,200),
-                        Vector<3, float>(0,0,-200), Vector<3, float>(0,1,0),
-                        Vector<3, float>(0,1,0), Vector<3, float>(0,1,0)));
-    FaceSet* tri_faces = new FaceSet();
-    tri_faces->Add(f1);
-    GeometryNode* tri = new GeometryNode(tri_faces);
-    current->AddNode(tri);
-    */
 }

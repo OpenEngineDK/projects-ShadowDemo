@@ -1,7 +1,7 @@
 #SmallLevel/SmallLevel.obj
 #FutureTank/model.obj
 SpeedBird/model.obj
-FutureTank/model.obj
+#FutureTank/model.obj
 #FutureTankShaded/FutureTankShaded.obj
 #CetattaShaded/CetattaShaded.obj
 #SmallLevel/SmallLevel.obj

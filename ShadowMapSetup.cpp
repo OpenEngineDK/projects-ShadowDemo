@@ -1,7 +1,7 @@
 
 #include "ShadowMapSetup.h"
-#include "ShadowMapRenderingView.h"
-#include "ShadowRenderingView.h"
+#include <Renderers/OpenGL/ShadowMapRenderingView.h>
+#include <Renderers/OpenGL/ShadowRenderingView.h>
 
 // Core stuff
 #include <Core/Engine.h>
@@ -19,7 +19,7 @@
 #include <Scene/ASDotVisitor.h>
 
 // OpenGL extension
-#include "ShadowMapRenderer.h"
+#include <Renderers/OpenGL/ShadowMapRenderer.h>
 //#include <Renderers/OpenGL/RenderingView.h>
 #include <Renderers/OpenGL/ShaderLoader.h>
 #include <Resources/GLSLResource.h>
@@ -38,7 +38,7 @@
 #include <Logging/StreamLogger.h>
 
 // HUD
-#include <Display/HUD.h>
+//#include <Display/HUD.h>
 
 namespace OpenEngine {
 namespace Utils {

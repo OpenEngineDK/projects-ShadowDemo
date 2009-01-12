@@ -3,10 +3,10 @@
 SET( SHADOWDEMO_SOURCES
   # Add all the cpp source files here
   main.cpp
-  ShadowMapRenderer.cpp
+#  ShadowMapRenderer.cpp
   ShadowMapSetup.cpp
-  ShadowMapRenderingView.cpp
-  ShadowRenderingView.cpp
+#  ShadowMapRenderingView.cpp
+#  ShadowRenderingView.cpp
 )
 
 # todo get rid of this!@#!
@@ -26,5 +26,6 @@ TARGET_LINK_LIBRARIES(ShadowDemo
   Extensions_SetupHelpers
   Extensions_FixedTimeStepPhysics
   Extensions_GenericHandlers
+  Extensions_OpenGLShadowMapping	
   ${BOOST_SERIALIZATION_LIB}
 )
