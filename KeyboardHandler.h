@@ -19,7 +19,7 @@ using OpenEngine::Core::IListener;
 /* using OpenEngine::Core::InitializeEventArg; */
 /* using OpenEngine::Core::ProcessEventArg; */
 /* using OpenEngine::Core::DeinitializeEventArg; */
-using OpenEngine::Devices::KeyboardEventArg;
+using namespace OpenEngine::Devices;
 /* using OpenEngine::Display::Camera; */
 /* using OpenEngine::Physics::RigidBox; */
 /* using OpenEngine::Physics::FixedTimeStepPhysics; */
@@ -47,7 +47,7 @@ public:
 
 
     void Handle(KeyboardEventArg arg) {
-        (arg.type == KeyboardEventArg::PRESS) ? KeyDown(arg) : KeyUp(arg);
+        (arg.type == EVENT_PRESS) ? KeyDown(arg) : KeyUp(arg);
     }
 
     void KeyDown(KeyboardEventArg arg) {
